@@ -240,7 +240,7 @@
 {"question": "When defining a method as `function object:method() end`, what hidden parameter is automatically defined?", "choices": ["this", "self", "obj", "context"], "answer": 1}
 {"question": "What is the result of `print(nil == nil)`?", "choices": ["false", "true", "nil", "Error"], "answer": 1}
 {"question": "What is the result of `print(0 == false)`?", "choices": ["true", "false", "nil", "Syntax Error"], "answer": 1}
-{"question": "What is the result of `print(\"10\" + 5)` in Luau?", "choices": ["15", "\"105\"", "Error in strict mode, otherwise 15 at runtime", "Error immediately"], "answer": 2}
+{"question": "What is the result of `print(\"10\" + 5)` in Luau?", "choices": ["15", "\"105\"", "Error in strict mode, otherwise 15 at runtime", "Error immediately"], "answer": 0}
 {"question": "What happens if you assign `nil` to an existing key in a table?", "choices": ["The key holds a null reference", "The key-value pair is removed from the table", "The table's size remains unchanged", "An error is thrown"], "answer": 1}
 {"question": "What is the default behavior when accessing a key that doesn't exist in a table?", "choices": ["Throws an error", "Returns 0", "Returns false", "Returns nil"], "answer": 3}
 {"question": "Which of these is a valid way to create an empty table?", "choices": ["{}", "[]", "table()", "new table"], "answer": 0}
