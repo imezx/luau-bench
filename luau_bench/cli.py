@@ -15,7 +15,7 @@ import luau_bench.api.filters  # noqa: F401
 
 
 def _setup_logging(verbose: bool) -> None:
-    level = logging.DEBUG if verbose else logging.INFO
+    level = logging.DEBUG if verbose else logging.ERROR
     handler = logging.StreamHandler(sys.stderr)
     handler.setFormatter(
         logging.Formatter(
@@ -26,6 +26,10 @@ def _setup_logging(verbose: bool) -> None:
     logging.root.handlers.clear()
     logging.root.addHandler(handler)
     logging.root.setLevel(level)
+
+    if not verbose:
+        for _lib in ("httpx", "httpcore", "hpack", "urllib3", "asyncio"):
+            logging.getLogger(_lib).setLevel(logging.ERROR)
 
 
 @click.group()
@@ -195,22 +199,23 @@ def run(
 
 # ls
 @main.command("ls")
-@click.option("--include-path", multiple=True, help="Directory containing task YAML files")
+@click.argument("paths", nargs=-1, type=click.Path())
+@click.option(
+    "--include-path",
+    multiple=True,
+    default=("./tasks",),
+    show_default=True,
+    help="Directory containing task YAML files (repeatable)",
+)
 @click.option("--json-output", is_flag=True, help="Output as JSON")
-def ls(include_path, json_output):
+def ls(paths, include_path, json_output):
     _setup_logging(False)
 
     from luau_bench.tasks import load_task_dirs
     from luau_bench.api import list_groups
 
-    if not include_path:
-        click.echo(
-            "\nNo task directories specified. Use --include-path to add one.\n"
-            "The harness ships no built-in tasks — tasks are user-defined.\n"
-        )
-        return
-
-    tasks = load_task_dirs(list(include_path))
+    dirs = list(paths) if paths else list(include_path)
+    tasks = load_task_dirs(dirs)
     groups = list_groups()
 
     if json_output:
@@ -233,7 +238,7 @@ def ls(include_path, json_output):
             click.echo(f"\nGroups ({len(groups)}):\n")
             for gname, members in sorted(groups.items()):
                 click.echo(
-                    f"  {click.style(gname, fg='magenta', bold=True):30s} -> {', '.join(members)}"
+                    f"  {click.style(gname, fg='magenta', bold=True):30s} → {', '.join(members)}"
                 )
             click.echo()
 
@@ -250,25 +255,34 @@ def ls(include_path, json_output):
                     f"metrics=[{metrics}]"
                 )
         else:
-            click.echo("\nNo tasks found in the specified directories.\n")
+            click.echo(
+                f"\nNo tasks found in {', '.join(dirs)}.\n"
+                "See templates/ for how to write task YAML files.\n"
+            )
         click.echo()
 
 
 # validate
 @main.command()
+@click.argument("paths", nargs=-1, type=click.Path())
 @click.option(
-    "--include-path", multiple=True, required=True, help="Directory containing task YAML files"
+    "--include-path",
+    multiple=True,
+    default=("./tasks",),
+    show_default=True,
+    help="Directory containing task YAML files (repeatable)",
 )
 @click.option("-v", "--verbose", is_flag=True)
-def validate(include_path, verbose):
+def validate(paths, include_path, verbose):
     _setup_logging(verbose)
 
     from luau_bench.tasks import load_task_dirs
     from luau_bench.api import list_metrics, list_filters
 
-    tasks = load_task_dirs(list(include_path))
+    dirs = list(paths) if paths else list(include_path)
+    tasks = load_task_dirs(dirs)
     if not tasks:
-        click.echo("\nNo tasks found. Check your --include-path.\n")
+        click.echo("\nNo tasks found. Check your path.\n")
         return
 
     available_metrics = set(list_metrics())
@@ -311,7 +325,11 @@ def validate(include_path, verbose):
 # selftest
 @main.command()
 @click.option(
-    "--include-path", multiple=True, required=True, help="Directory containing task YAML files"
+    "--include-path",
+    multiple=True,
+    default=("./tasks",),
+    show_default=True,
+    help="Directory containing task YAML files (repeatable)",
 )
 @click.option(
     "--tasks", "task_names", default="", help="Comma-separated task names to test (default: all)"
@@ -505,6 +523,8 @@ def compare(files, baseline_file, per_task):
         )
 
         def _get_ci(run_data: dict, task: str, metric: str) -> Optional[tuple[float, float]]:
+            """Extract (ci_lower, ci_upper) for a metric from the JSON result,
+            or None if no CI data is present."""
             se_block = run_data.get("tasks", {}).get(task, {}).get("std_errors", {}).get(metric)
             if se_block and "ci_lower" in se_block and "ci_upper" in se_block:
                 return (se_block["ci_lower"], se_block["ci_upper"])
