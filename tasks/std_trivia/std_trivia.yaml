@@ -1,0 +1,3 @@
+group: std_trivia
+task:
+  - std_trivia_easy

@@ -1,0 +1,255 @@
+{"question": "Which of the following is NOT a valid type inference mode directive in Luau?", "choices": ["--!strict", "--!nonstrict", "--!nocheck", "--!dynamic"], "answer": 3}
+{"question": "Which of the following operators does Luau support that standard Lua 5.1 does NOT?", "choices": ["Compound assignment operators (e.g., +=, -=)", "Bitwise operators (e.g., &, |)", "The goto statement", "The ternary operator (condition ? a : b)"], "answer": 0}
+{"question": "What is the correct syntax for a type cast expression in Luau?", "choices": ["value as Type", "(Type)value", "value :: Type", "cast<Type>(value)"], "answer": 2}
+{"question": "How is string interpolation performed in Luau?", "choices": ["Using the $ symbol before double quotes: $\"Value: {x}\"", "Using backticks and braces: `Value: {x}`", "Using the # symbol and brackets: #\"Value: [x]\"", "Using the f prefix before single quotes: f'Value: {x}'"], "answer": 1}
+{"question": "In Luau's type system, which type represents a value that can be assigned from anything but MUST be explicitly refined before being used?", "choices": ["any", "unknown", "never", "nil"], "answer": 1}
+{"question": "What feature does Luau introduce to simplify iterating over tables without needing functions like pairs() or ipairs()?", "choices": ["Generalized iteration (e.g., for k, v in myTable do)", "The table.each() method", "The foreach keyword", "Array comprehensions"], "answer": 0}
+{"question": "Luau is heavily derived from and maintains syntactic backwards compatibility with which version of Lua?", "choices": ["Lua 5.0", "Lua 5.1", "Lua 5.3", "Lua 5.4"], "answer": 1}
+{"question": "Which loop control statement is natively supported in Luau but missing in standard Lua 5.1?", "choices": ["break", "continue", "pass", "yield"], "answer": 1}
+{"question": "Which operator is used in Luau for floor division?", "choices": ["/", "//", "\\\\", "div"], "answer": 1}
+{"question": "How do you declare a custom type alias in a Luau script?", "choices": ["interface MyType = {}", "alias MyType = {}", "type MyType = {}", "struct MyType {}"], "answer": 2}
+{"question": "What does the `never` type represent in Luau?", "choices": ["A value that has not been assigned", "A function that returns nil", "A type that cannot hold any value", "An implicitly dynamic type"], "answer": 2}
+{"question": "How do you specify an optional type in Luau?", "choices": ["Type?", "Optional<Type>", "Type | nil", "Both A and C"], "answer": 3}
+{"question": "Which keyword is used to export a type alias so it can be required by other modules?", "choices": ["export", "public", "global", "shared"], "answer": 0}
+{"question": "What is the result of the expression `if true then 1 else 2` in Luau?", "choices": ["1", "2", "true", "Syntax Error"], "answer": 0}
+{"question": "Which of these is a valid way to write one million as a numeric literal in Luau?", "choices": ["1_000_000", "1,000,000", "1M", "1000k"], "answer": 0}
+{"question": "How do you represent binary literals in Luau?", "choices": ["0x1010", "0b1010", "b1010", "bin(1010)"], "answer": 1}
+{"question": "How do you represent hexadecimal literals in Luau?", "choices": ["x0A", "0x0A", "hex(0A)", "#0A"], "answer": 1}
+{"question": "What function is used to get the type of a value, including user-defined type names via metatables?", "choices": ["type()", "typeof()", "gettype()", "classof()"], "answer": 1}
+{"question": "Which of these types does `type()` return but `typeof()` expands upon for custom userdata?", "choices": ["userdata", "string", "number", "table"], "answer": 0}
+{"question": "What does `typeof(nil)` return?", "choices": ["null", "nil", "none", "undefined"], "answer": 1}
+{"question": "What metamethod allows you to customize the output of the `typeof()` function for userdata?", "choices": ["__name", "__class", "__type", "__typeof"], "answer": 2}
+{"question": "What is the maximum number of local variables allowed in a single Luau function?", "choices": ["60", "200", "256", "Unlimited"], "answer": 1}
+{"question": "What is the correct syntax to denote a generic function in Luau?", "choices": ["function foo<T>(val: T)", "function foo(val: T<any>)", "function foo(val: generic)", "function<T> foo(val: T)"], "answer": 0}
+{"question": "Which function provides an iteration function, a table, and a starting index for ordered array iteration?", "choices": ["pairs()", "ipairs()", "next()", "iter()"], "answer": 1}
+{"question": "Which function traverses all key-value pairs in a table regardless of whether keys are numeric?", "choices": ["ipairs()", "next()", "pairs()", "all()"], "answer": 2}
+{"question": "What does `table.freeze(t)` do?", "choices": ["Makes the table read-only", "Stops the table from being garbage collected", "Pauses iteration on the table", "Removes all elements from the table"], "answer": 0}
+{"question": "What happens if you try to modify a frozen table?", "choices": ["It silently fails", "It modifies a copy instead", "It throws a runtime error", "It unfreezes automatically"], "answer": 2}
+{"question": "Which function checks if a table has been frozen?", "choices": ["table.isfrozen()", "table.frozen()", "table.locked()", "table.isreadonly()"], "answer": 0}
+{"question": "What does `table.clear(t)` do?", "choices": ["Sets the table reference to nil", "Removes all keys and values but keeps the table's capacity allocated", "Deletes the table from memory immediately", "Resets the table's metatable"], "answer": 1}
+{"question": "What does `table.clone(t)` do in Luau?", "choices": ["Creates a deep copy of the table", "Creates a shallow copy of the table", "Returns a pointer to the same table", "Copies only the table's metatable"], "answer": 1}
+{"question": "Which function creates a new table pre-filled with a given value across a set number of array slots?", "choices": ["table.new(size, value)", "table.create(size, value)", "table.alloc(size, value)", "table.fill(size, value)"], "answer": 1}
+{"question": "What function is used to find the first index of a value in an array?", "choices": ["table.find(t, value)", "table.search(t, value)", "table.indexof(t, value)", "table.match(t, value)"], "answer": 0}
+{"question": "What happens if `table.find(t, value)` does not find the value?", "choices": ["Returns 0", "Returns -1", "Returns nil", "Throws an error"], "answer": 2}
+{"question": "Which table library function was deprecated/removed in Luau due to length operator optimizations?", "choices": ["table.insert", "table.maxn", "table.remove", "table.sort"], "answer": 1}
+{"question": "What does `table.concat(t, sep)` do?", "choices": ["Merges two tables together", "Returns a string of array elements joined by the separator", "Adds the separator as the last element", "Converts the separator into a table"], "answer": 1}
+{"question": "Which function allows moving elements within or between tables in Luau?", "choices": ["table.shift", "table.copy", "table.move", "table.transfer"], "answer": 2}
+{"question": "What does `table.pack(...)` do?", "choices": ["Compresses a table in memory", "Returns a new table with all passed arguments and an 'n' field for count", "Serializes a table to a string", "Removes nil values from an array"], "answer": 1}
+{"question": "What does `table.unpack(t)` do?", "choices": ["Decompresses a string into a table", "Returns the elements from the given table as multiple return values", "Deletes the table", "Removes the 'n' field from a packed table"], "answer": 1}
+{"question": "What is the primary use of the `math.abs(x)` function?", "choices": ["Returns the absolute value of x", "Returns the arc cosine of x", "Returns the adjacent side of a triangle", "Abstracts the variable x"], "answer": 0}
+{"question": "Which math function returns the smallest integer greater than or equal to x?", "choices": ["math.floor(x)", "math.ceil(x)", "math.round(x)", "math.modf(x)"], "answer": 1}
+{"question": "Which math function returns the largest integer smaller than or equal to x?", "choices": ["math.ceil(x)", "math.round(x)", "math.modf(x)", "math.floor(x)"], "answer": 3}
+{"question": "Which math function rounds a number to the nearest integer?", "choices": ["math.round(x)", "math.floor(x)", "math.ceil(x)", "math.trunc(x)"], "answer": 0}
+{"question": "What does `math.clamp(x, min, max)` do?", "choices": ["Returns the sum of min and max", "Returns x constrained between min and max", "Returns true if x is between min and max", "Throws an error if x is out of bounds"], "answer": 1}
+{"question": "What does `math.noise(x, y, z)` generate in Luau?", "choices": ["Random static", "A Perlin noise value", "A true random number between x and y", "A cryptographic hash"], "answer": 1}
+{"question": "What does `math.sign(x)` return if x is a positive number?", "choices": ["0", "1", "x", "-1"], "answer": 1}
+{"question": "What does `math.sign(x)` return if x is exactly 0?", "choices": ["0", "1", "-1", "nil"], "answer": 0}
+{"question": "Which math function is used to convert degrees to radians?", "choices": ["math.deg(x)", "math.rad(x)", "math.pi", "math.asin(x)"], "answer": 1}
+{"question": "Which math function is used to convert radians to degrees?", "choices": ["math.deg(x)", "math.rad(x)", "math.pi", "math.acos(x)"], "answer": 0}
+{"question": "What does `math.random()` return when called with no arguments?", "choices": ["An integer between 0 and 100", "A float between 0.0 and 1.0", "A float between -1.0 and 1.0", "An integer between 1 and 10"], "answer": 1}
+{"question": "What does `math.random(n)` return?", "choices": ["An integer between 0 and n", "An integer between 1 and n", "A float between 1 and n", "An integer between -n and n"], "answer": 1}
+{"question": "What does `math.random(m, n)` return?", "choices": ["A float between m and n", "An integer between m and n", "Two integers, m and n", "A random choice between m or n"], "answer": 1}
+{"question": "Which math function returns the square root of a number?", "choices": ["math.pow(x)", "math.sqr(x)", "math.sqrt(x)", "math.root(x)"], "answer": 2}
+{"question": "Which call correctly computes the base-10 logarithm of x in Luau?", "choices": ["math.log(x)", "math.log(x, 10)", "math.ln(x)", "math.exp(x)"], "answer": 1}
+{"question": "What is the correct Luau idiom for raising x to the power of y?", "choices": ["math.pow(x, y)", "math.exp(x, y)", "x ^ y", "math.root(x, y)"], "answer": 2}
+{"question": "What does `math.modf(x)` return?", "choices": ["The remainder of division by 1", "The integral part and the fractional part of x", "The modulus of x", "The absolute value of x"], "answer": 1}
+{"question": "What does `math.fmod(x, y)` return?", "choices": ["The floating-point remainder of x/y", "The integer division of x/y", "The factorial of x", "The absolute difference of x and y"], "answer": 0}
+{"question": "Which math function returns the sine of an angle given in radians?", "choices": ["math.cos(x)", "math.tan(x)", "math.sin(x)", "math.asin(x)"], "answer": 2}
+{"question": "Which math function returns the cosine of an angle given in radians?", "choices": ["math.sin(x)", "math.tan(x)", "math.acos(x)", "math.cos(x)"], "answer": 3}
+{"question": "Which math function returns the tangent of an angle given in radians?", "choices": ["math.tan(x)", "math.sin(x)", "math.cos(x)", "math.atan(x)"], "answer": 0}
+{"question": "Which call returns the arc tangent of y/x using the signs of both arguments to determine the correct quadrant in Luau?", "choices": ["math.atan(y/x)", "math.atan(y, x)", "math.atan2(y, x)", "math.acos(y/x)"], "answer": 1}
+{"question": "What does `math.exp(x)` return?", "choices": ["10 to the power of x", "x to the power of e", "e to the power of x", "The exponent of x"], "answer": 2}
+{"question": "What does `math.max(x, ...)` return?", "choices": ["The maximum integer possible", "The largest of the arguments", "The maximum of an array", "The smallest of the arguments"], "answer": 1}
+{"question": "What does `math.min(x, ...)` return?", "choices": ["The smallest of the arguments", "The largest of the arguments", "The minimum integer possible", "The minimum of an array"], "answer": 0}
+{"question": "Which function returns the internal numeric code of a character in a string?", "choices": ["string.char()", "string.code()", "string.byte()", "string.ascii()"], "answer": 2}
+{"question": "Which function generates a string from a series of internal numeric codes?", "choices": ["string.byte()", "string.char()", "string.format()", "string.concat()"], "answer": 1}
+{"question": "What does `string.find(s, pattern)` return if a match is found?", "choices": ["The matched string", "The starting and ending indices of the match", "A boolean true", "The index of the match only"], "answer": 1}
+{"question": "What does `string.match(s, pattern)` return if a match is found?", "choices": ["The starting index of the match", "A boolean true", "The matched substring (or captures)", "The number of matches"], "answer": 2}
+{"question": "Which string function returns an iterator that yields all occurrences of a pattern?", "choices": ["string.find", "string.match", "string.gsub", "string.gmatch"], "answer": 3}
+{"question": "Which string function replaces occurrences of a pattern with a replacement string or function?", "choices": ["string.replace", "string.gsub", "string.sub", "string.swap"], "answer": 1}
+{"question": "What does `string.len(s)` return?", "choices": ["The number of bytes in the string", "The number of words in the string", "The number of UTF-8 characters", "The memory address of the string"], "answer": 0}
+{"question": "What operator is synonymous with `string.len(s)`?", "choices": ["*", "@", "#", "$"], "answer": 2}
+{"question": "Which function converts all uppercase letters in a string to lowercase?", "choices": ["string.lower()", "string.upper()", "string.down()", "string.case()"], "answer": 0}
+{"question": "Which function converts all lowercase letters in a string to uppercase?", "choices": ["string.lower()", "string.up()", "string.upper()", "string.capitalize()"], "answer": 2}
+{"question": "What does `string.rep(s, n)` do?", "choices": ["Replaces s with n", "Repeats string s, n times", "Reverses the string s, n times", "Removes n characters from s"], "answer": 1}
+{"question": "Which string function reverses a string?", "choices": ["string.flip()", "string.backwards()", "string.reverse()", "string.invert()"], "answer": 2}
+{"question": "What does `string.sub(s, i, j)` return?", "choices": ["The substring from index i to j", "The string s with the substring removed", "The indices of the substring", "The string s substituted with i and j"], "answer": 0}
+{"question": "What does `string.split(s, separator)` return in Luau?", "choices": ["A string with the separator removed", "An array of substrings broken by the separator", "Two strings split at the middle", "A single concatenated string"], "answer": 1}
+{"question": "Which function allows formatting strings using C-style printf directives?", "choices": ["string.pack()", "string.format()", "string.gsub()", "string.print()"], "answer": 1}
+{"question": "What does `string.pack(fmt, ...)` do?", "choices": ["Formats a string for printing", "Packs a table into a string", "Serializes values into a binary string based on a format", "Compresses a string"], "answer": 2}
+{"question": "What does `string.unpack(fmt, s)` do?", "choices": ["Unzips a compressed string", "Extracts values from a binary string based on a format", "Splits a string by spaces", "Returns all characters of a string as separate returns"], "answer": 1}
+{"question": "Which function returns the size of a binary format string used by `string.pack`?", "choices": ["string.len()", "string.packlen()", "string.packsize()", "string.sizeof()"], "answer": 2}
+{"question": "Which library handles bitwise operations in Luau?", "choices": ["bit", "math", "bit32", "binary"], "answer": 2}
+{"question": "Which bit32 function performs a bitwise AND?", "choices": ["bit32.and()", "bit32.band()", "bit32.intersect()", "bit32.b_and()"], "answer": 1}
+{"question": "Which bit32 function performs a bitwise OR?", "choices": ["bit32.or()", "bit32.union()", "bit32.bor()", "bit32.b_or()"], "answer": 2}
+{"question": "Which bit32 function performs a bitwise Exclusive OR (XOR)?", "choices": ["bit32.xor()", "bit32.bxor()", "bit32.exclusive()", "bit32.exor()"], "answer": 1}
+{"question": "Which bit32 function performs a bitwise NOT?", "choices": ["bit32.not()", "bit32.bnot()", "bit32.invert()", "bit32.neg()"], "answer": 1}
+{"question": "What does `bit32.lshift(x, disp)` do?", "choices": ["Shifts x logically left by disp bits", "Shifts x arithmetically left by disp bits", "Rotates x left by disp bits", "Subtracts disp from x"], "answer": 0}
+{"question": "What does `bit32.rshift(x, disp)` do?", "choices": ["Shifts x arithmetically right by disp bits", "Rotates x right by disp bits", "Shifts x logically right by disp bits", "Divides x by disp"], "answer": 2}
+{"question": "What does `bit32.arshift(x, disp)` do?", "choices": ["Shifts x logically right", "Shifts x arithmetically right (preserves sign bit)", "Adds disp to x", "Rotates x right"], "answer": 1}
+{"question": "What does `bit32.lrotate(x, disp)` do?", "choices": ["Shifts x left logically", "Rotates x left circularly by disp bits", "Reverses the bits of x", "Swaps the left and right halves of x"], "answer": 1}
+{"question": "What does `bit32.rrotate(x, disp)` do?", "choices": ["Rotates x right circularly by disp bits", "Shifts x right logically", "Shifts x right arithmetically", "Swaps the left and right halves of x"], "answer": 0}
+{"question": "Which bit32 function extracts a sequence of bits from a number?", "choices": ["bit32.sub()", "bit32.get()", "bit32.extract()", "bit32.pull()"], "answer": 2}
+{"question": "Which bit32 function replaces a sequence of bits in a number?", "choices": ["bit32.replace()", "bit32.set()", "bit32.put()", "bit32.insert()"], "answer": 0}
+{"question": "Which bit32 function tests if the bitwise AND of its arguments is different from zero?", "choices": ["bit32.btest()", "bit32.band()", "bit32.istrue()", "bit32.test()"], "answer": 0}
+{"question": "Which bit32 function returns the number of consecutive zero bits starting from the left?", "choices": ["bit32.countlz()", "bit32.countrz()", "bit32.leftzeros()", "bit32.zeros()"], "answer": 0}
+{"question": "Which bit32 function returns the number of consecutive zero bits starting from the right?", "choices": ["bit32.countlz()", "bit32.countrz()", "bit32.rightzeros()", "bit32.zeros()"], "answer": 1}
+{"question": "Which library in Luau provides functions for Unicode string manipulation?", "choices": ["unicode", "string", "utf8", "text"], "answer": 2}
+{"question": "What does `utf8.char(...)` do?", "choices": ["Returns the internal byte code of a character", "Receives zero or more integers and returns a string with their corresponding UTF-8 encodings", "Replaces invalid UTF-8 characters", "Splits a string by characters"], "answer": 1}
+{"question": "What does `utf8.codepoint(s, i, j)` return?", "choices": ["The length of the string", "The number of codepoints in the string", "The codepoints (as integers) from all characters in s between positions i and j", "The string converted to a byte array"], "answer": 2}
+{"question": "Which utf8 function returns an iterator for iterating over all codepoints in a string?", "choices": ["utf8.gmatch", "utf8.codes", "utf8.chars", "utf8.iter"], "answer": 1}
+{"question": "What does `utf8.len(s, i, j)` return?", "choices": ["The number of bytes in the string", "The number of UTF-8 characters in the string between positions i and j", "The number of words in the string", "The memory address of the string"], "answer": 1}
+{"question": "What happens if `utf8.len` encounters an invalid UTF-8 sequence?", "choices": ["It returns the length up to the invalid sequence", "It throws a runtime error", "It ignores the sequence", "It returns nil and the position of the first invalid byte"], "answer": 3}
+{"question": "Which utf8 function returns the byte position where the n-th character's encoding starts?", "choices": ["utf8.position()", "utf8.offset()", "utf8.index()", "utf8.find()"], "answer": 1}
+{"question": "What does `utf8.charpattern` contain?", "choices": ["A string pattern that matches exactly one UTF-8 byte sequence", "A function that validates UTF-8 strings", "A regex for finding numbers", "A boolean flag for UTF-8 mode"], "answer": 0}
+{"question": "What value does `math.huge` represent in Luau?", "choices": ["The largest representable integer", "Positive infinity", "A very large but finite float", "The mathematical constant e"], "answer": 1}
+{"question": "Which global function returns the next key-value pair in a table after a given key, enabling manual table traversal?", "choices": ["pairs()", "ipairs()", "next()", "select()"], "answer": 2}
+{"question": "What value does `math.pi` hold in Luau?", "choices": ["An approximation of pi (3.14159...)", "A function that calculates pi to n digits", "The maximum value of a float", "The ratio of a circle's circumference to its diameter"], "answer": 0}
+{"question": "What does the Luau `buffer` type represent?", "choices": ["A resizable string", "A mutable block of raw memory", "A queue data structure", "A thread-safe table"], "answer": 1}
+{"question": "How do you create a new buffer in Luau?", "choices": ["buffer.new(size)", "buffer.create(size)", "buffer.alloc(size)", "buffer.make(size)"], "answer": 1}
+{"question": "What does `buffer.len(b)` return?", "choices": ["The number of bytes in the buffer", "The number of items written to the buffer", "The maximum capacity of the buffer", "The string length of the buffer"], "answer": 0}
+{"question": "Which function converts an entire buffer into a string?", "choices": ["tostring(b)", "buffer.tostring(b)", "buffer.readstring(b)", "string.frombuffer(b)"], "answer": 1}
+{"question": "Which function creates a new buffer from a string?", "choices": ["buffer.fromstring(s)", "buffer.create(s)", "buffer.parse(s)", "string.tobuffer(s)"], "answer": 0}
+{"question": "What does `buffer.readi8(b, offset)` read from the buffer?", "choices": ["An unsigned 8-bit integer", "A signed 8-bit integer", "An 8-byte string", "A signed 16-bit integer"], "answer": 1}
+{"question": "What does `buffer.readu8(b, offset)` read from the buffer?", "choices": ["A signed 8-bit integer", "An unsigned 8-bit integer", "An 8-byte string", "An unsigned 16-bit integer"], "answer": 1}
+{"question": "What does `buffer.readi16(b, offset)` read from the buffer?", "choices": ["A signed 8-bit integer", "A signed 16-bit integer", "An unsigned 16-bit integer", "A 16-byte string"], "answer": 1}
+{"question": "What does `buffer.readu16(b, offset)` read from the buffer?", "choices": ["A signed 16-bit integer", "An unsigned 8-bit integer", "An unsigned 16-bit integer", "A 16-byte string"], "answer": 2}
+{"question": "What does `buffer.readi32(b, offset)` read from the buffer?", "choices": ["A signed 32-bit integer", "An unsigned 32-bit integer", "A 32-bit float", "A 32-byte string"], "answer": 0}
+{"question": "What does `buffer.readu32(b, offset)` read from the buffer?", "choices": ["A signed 32-bit integer", "An unsigned 32-bit integer", "A 32-bit float", "A 32-byte string"], "answer": 1}
+{"question": "What does `buffer.readf32(b, offset)` read from the buffer?", "choices": ["A 32-bit integer", "A 32-bit float (single precision)", "A 64-bit float", "A 32-byte string"], "answer": 1}
+{"question": "What does `buffer.readf64(b, offset)` read from the buffer?", "choices": ["A 64-bit integer", "A 32-bit float", "A 64-bit float (double precision)", "A 64-byte string"], "answer": 2}
+{"question": "Which function writes an unsigned 8-bit integer to a buffer?", "choices": ["buffer.writei8(b, offset, value)", "buffer.writeu8(b, offset, value)", "buffer.putu8(b, offset, value)", "buffer.setu8(b, offset, value)"], "answer": 1}
+{"question": "Which function writes a signed 16-bit integer to a buffer?", "choices": ["buffer.writeu16(b, offset, value)", "buffer.writei16(b, offset, value)", "buffer.puti16(b, offset, value)", "buffer.seti16(b, offset, value)"], "answer": 1}
+{"question": "Which function writes a signed 32-bit integer to a buffer?", "choices": ["buffer.writeu32(b, offset, value)", "buffer.writei32(b, offset, value)", "buffer.puti32(b, offset, value)", "buffer.seti32(b, offset, value)"], "answer": 1}
+{"question": "Which function writes a 32-bit float to a buffer?", "choices": ["buffer.writef32(b, offset, value)", "buffer.writefloat(b, offset, value)", "buffer.putf32(b, offset, value)", "buffer.setf32(b, offset, value)"], "answer": 0}
+{"question": "Which function writes a 64-bit float to a buffer?", "choices": ["buffer.writef64(b, offset, value)", "buffer.writedouble(b, offset, value)", "buffer.putf64(b, offset, value)", "buffer.setf64(b, offset, value)"], "answer": 0}
+{"question": "Which function writes a string directly into a buffer at a specified offset?", "choices": ["buffer.writestring(b, offset, s)", "buffer.putstring(b, offset, s)", "buffer.setstring(b, offset, s)", "buffer.copy(b, offset, s)"], "answer": 0}
+{"question": "Which function copies data from a source buffer to a destination buffer?", "choices": ["buffer.transfer()", "buffer.move()", "buffer.copy()", "buffer.clone()"], "answer": 2}
+{"question": "Which function fills a section of a buffer with a specific byte value?", "choices": ["buffer.clear()", "buffer.set()", "buffer.fill()", "buffer.populate()"], "answer": 2}
+{"question": "What metamethod is triggered when a script attempts to read a key that does not exist in a table?", "choices": ["__newindex", "__index", "__get", "__read"], "answer": 1}
+{"question": "What metamethod is triggered when a script attempts to assign a value to a key that does not exist in a table?", "choices": ["__index", "__set", "__newindex", "__write"], "answer": 2}
+{"question": "What metamethod is triggered when a table is called like a function using parentheses?", "choices": ["__invoke", "__function", "__run", "__call"], "answer": 3}
+{"question": "What metamethod is triggered when two tables are added together using the `+` operator?", "choices": ["__plus", "__add", "__sum", "__combine"], "answer": 1}
+{"question": "What metamethod is triggered when a table is subtracted from another using the `-` operator?", "choices": ["__minus", "__sub", "__diff", "__subtract"], "answer": 1}
+{"question": "What metamethod is triggered when two tables are multiplied using the `*` operator?", "choices": ["__multiply", "__product", "__mul", "__times"], "answer": 2}
+{"question": "What metamethod is triggered when one table is divided by another using the `/` operator?", "choices": ["__divide", "__quotient", "__div", "__split"], "answer": 2}
+{"question": "What metamethod is triggered when the floor division operator `//` is used on a table?", "choices": ["__idiv", "__floordiv", "__fdiv", "__div2"], "answer": 0}
+{"question": "What metamethod is triggered when the modulo operator `%` is used on a table?", "choices": ["__modulo", "__mod", "__rem", "__remainder"], "answer": 1}
+{"question": "What metamethod is triggered when the exponentiation operator `^` is used on a table?", "choices": ["__exp", "__power", "__pow", "__raise"], "answer": 2}
+{"question": "What metamethod is triggered when the unary minus operator `-` is used on a table?", "choices": ["__negate", "__neg", "__unm", "__minus"], "answer": 2}
+{"question": "What metamethod is triggered when two tables are joined using the `..` concatenation operator?", "choices": ["__join", "__concat", "__combine", "__merge"], "answer": 1}
+{"question": "What metamethod allows you to customize the string representation of a table when `tostring()` is called?", "choices": ["__string", "__tostring", "__repr", "__format"], "answer": 1}
+{"question": "What metamethod is triggered when comparing two tables using `==`?", "choices": ["__equals", "__equal", "__eq", "__is"], "answer": 2}
+{"question": "What metamethod is triggered when comparing two tables using `<`?", "choices": ["__less", "__lt", "__smaller", "__lessthan"], "answer": 1}
+{"question": "What metamethod is triggered when comparing two tables using `<=`?", "choices": ["__lessequal", "__le", "__lte", "__leq"], "answer": 1}
+{"question": "What metamethod is triggered when the length operator `#` is used on a table?", "choices": ["__size", "__count", "__len", "__length"], "answer": 2}
+{"question": "What metamethod allows overriding the behavior of a table in generalized iteration (e.g. `for k,v in t do`)?", "choices": ["__iter", "__pairs", "__loop", "__traverse"], "answer": 0}
+{"question": "Which metamethod restricts the ability of scripts to change or view a table's metatable using `getmetatable` or `setmetatable`?", "choices": ["__locked", "__protected", "__metatable", "__hidden"], "answer": 2}
+{"question": "What does the `__mode` metamethod control?", "choices": ["Whether the table is read-only", "Whether the table's keys or values are weakly referenced for garbage collection", "Whether the table uses strict type checking", "Whether the table can be serialized"], "answer": 1}
+{"question": "What string value assigned to `__mode` makes both keys and values in a table weak references?", "choices": ["k", "v", "kv", "weak"], "answer": 2}
+{"question": "Which global function raises an error if its first argument is false or nil, otherwise returning all its arguments?", "choices": ["assert()", "verify()", "check()", "require()"], "answer": 0}
+{"question": "Which global function terminates the last protected function called and returns the error message?", "choices": ["stop()", "halt()", "error()", "crash()"], "answer": 2}
+{"question": "Which global function allows returning the metatable of a given table or userdata?", "choices": ["getmetatable()", "readmetatable()", "typeof()", "rawget()"], "answer": 0}
+{"question": "Which global function allows setting the metatable of a given table?", "choices": ["setmetatable()", "writemetatable()", "updatemetatable()", "rawset()"], "answer": 0}
+{"question": "Which global function calls its first argument in protected mode, catching any errors without crashing the script?", "choices": ["xpcall()", "try()", "pcall()", "safecall()"], "answer": 2}
+{"question": "What is the difference between `pcall()` and `xpcall()`?", "choices": ["pcall is faster", "xpcall accepts a custom error handler function", "xpcall can only call C functions", "pcall cannot return values"], "answer": 1}
+{"question": "What does `select(index, ...)` return if the index is a number?", "choices": ["The argument at the given index", "All arguments starting from the given index", "The number of arguments provided", "An array of arguments starting from the index"], "answer": 1}
+{"question": "What does `select('#', ...)` return?", "choices": ["The string '#' appended to arguments", "A table of the arguments", "The total number of extra arguments", "The first argument"], "answer": 2}
+{"question": "Which global function attempts to convert its argument to a number?", "choices": ["number()", "tonumber()", "parse()", "castnumber()"], "answer": 1}
+{"question": "Which global function converts its argument to a string according to basic formatting rules or its `__tostring` metamethod?", "choices": ["string()", "tostring()", "format()", "caststring()"], "answer": 1}
+{"question": "Which global function returns the basic Lua type of its argument as a string?", "choices": ["typeof()", "type()", "gettype()", "classof()"], "answer": 1}
+{"question": "Which global function bypasses metamethods to get the real value of a key in a table?", "choices": ["rawread()", "rawget()", "raw()", "get()"], "answer": 1}
+{"question": "Which global function bypasses metamethods to set the real value of a key in a table?", "choices": ["rawwrite()", "set()", "rawset()", "raw()"], "answer": 2}
+{"question": "Which global function checks if two values are equal without triggering the `__eq` metamethod?", "choices": ["rawcompare()", "raweq()", "rawequal()", "equal()"], "answer": 2}
+{"question": "What global variable holds a string with the current Lua/Luau version?", "choices": ["_VERSION", "VERSION", "_LUA_VERSION", "LUAU_VERSION"], "answer": 0}
+{"question": "Which global function is used to load and execute an external module in Luau?", "choices": ["import()", "include()", "require()", "load()"], "answer": 2}
+{"question": "What does the `+` operator do?", "choices": ["Addition", "Subtraction", "Multiplication", "Division"], "answer": 0}
+{"question": "What does the `-` operator do when placed between two numbers?", "choices": ["Addition", "Subtraction", "Multiplication", "Division"], "answer": 1}
+{"question": "What does the `*` operator do?", "choices": ["Addition", "Subtraction", "Multiplication", "Division"], "answer": 2}
+{"question": "What does the `/` operator do?", "choices": ["Addition", "Subtraction", "Multiplication", "Division"], "answer": 3}
+{"question": "What does the `//` operator do?", "choices": ["Floor division", "Modulo", "Exponentiation", "Root"], "answer": 0}
+{"question": "What does the `%` operator do?", "choices": ["Floor division", "Modulo (Remainder)", "Percentage", "Bitwise AND"], "answer": 1}
+{"question": "What does the `^` operator do in Luau?", "choices": ["Bitwise XOR", "Modulo", "Exponentiation", "Bitwise NOT"], "answer": 2}
+{"question": "What does the `==` operator check for?", "choices": ["Assignment", "Inequality", "Equality", "Greater than"], "answer": 2}
+{"question": "What does the `~=` operator check for?", "choices": ["Bitwise NOT", "Inequality", "Equality", "Approximate equality"], "answer": 1}
+{"question": "What does the `<=` operator check for?", "choices": ["Less than or equal to", "Greater than or equal to", "Assignment", "Bitwise shift"], "answer": 0}
+{"question": "What does the `>=` operator check for?", "choices": ["Less than or equal to", "Greater than or equal to", "Assignment", "Bitwise shift"], "answer": 1}
+{"question": "What does the `<` operator check for?", "choices": ["Less than", "Greater than", "Less than or equal to", "Bitwise shift left"], "answer": 0}
+{"question": "What does the `>` operator check for?", "choices": ["Less than", "Greater than", "Greater than or equal to", "Bitwise shift right"], "answer": 1}
+{"question": "What is the logical AND operator in Luau?", "choices": ["&", "&&", "and", "AND"], "answer": 2}
+{"question": "What is the logical OR operator in Luau?", "choices": ["|", "||", "or", "OR"], "answer": 2}
+{"question": "What is the logical NOT operator in Luau?", "choices": ["!", "~", "not", "NOT"], "answer": 2}
+{"question": "What operator concatenates two strings?", "choices": ["+", "&", "..", "concat"], "answer": 2}
+{"question": "What does the `+=` operator do?", "choices": ["Concatenates and assigns", "Adds and assigns", "Compares greater than or equal to", "Checks for equality"], "answer": 1}
+{"question": "What does the `-=` operator do?", "choices": ["Subtracts and assigns", "Adds and assigns", "Compares less than or equal to", "Checks for inequality"], "answer": 0}
+{"question": "What does the `*=` operator do?", "choices": ["Multiplies and assigns", "Adds and assigns", "Pointer dereference", "Comments out code"], "answer": 0}
+{"question": "What does the `/=` operator do?", "choices": ["Divides and assigns", "Inequality comparison in some languages, but divides in Luau", "Floor divides and assigns", "Modulo and assigns"], "answer": 0}
+{"question": "What does the `//=` operator do?", "choices": ["Floor divides and assigns", "Comments out a line", "Divides and assigns", "Modulo and assigns"], "answer": 0}
+{"question": "What does the `%=` operator do?", "choices": ["Modulo and assigns", "Divides and assigns", "Format string and assigns", "Percentage calculation"], "answer": 0}
+{"question": "What does the `^=` operator do?", "choices": ["Bitwise XOR and assigns", "Exponentiation and assigns", "Logical AND and assigns", "Checks for inequality"], "answer": 1}
+{"question": "What does the `..=` operator do?", "choices": ["Concatenates and assigns", "Creates a range", "Adds and assigns", "Logical OR and assigns"], "answer": 0}
+{"question": "In Luau, what evaluates to 'false' in a conditional check?", "choices": ["false and 0", "false, 0, and \"\"", "false and nil", "false, nil, and 0"], "answer": 2}
+{"question": "Which keyword is used to skip the rest of the current loop iteration and move to the next one?", "choices": ["pass", "next", "continue", "skip"], "answer": 2}
+{"question": "Which keyword is used to exit a loop completely?", "choices": ["stop", "exit", "break", "return"], "answer": 2}
+{"question": "In a `for i = 1, 10, 2 do` loop, what does the `2` represent?", "choices": ["The starting value", "The ending value", "The step value", "The condition"], "answer": 2}
+{"question": "What happens if a `while` loop's condition is never met initially?", "choices": ["It throws an error", "It runs infinitely", "The loop body is skipped entirely", "It runs exactly once"], "answer": 2}
+{"question": "Which loop guarantees that the body will execute at least once?", "choices": ["while loop", "repeat...until loop", "for loop", "There is no such loop in Luau"], "answer": 1}
+{"question": "In Luau's type system, what does the `?` suffix on a type name mean (e.g., `string?`)?", "choices": ["The type is unknown", "The type is dynamic", "The type is optional (can be string or nil)", "The type is a boolean"], "answer": 2}
+{"question": "How do you define a union type in Luau?", "choices": ["type A = string and number", "type A = string | number", "type A = string & number", "type A = string or number"], "answer": 1}
+{"question": "How do you define an intersection type in Luau?", "choices": ["type A = string and number", "type A = string | number", "type A = string & number", "type A = string + number"], "answer": 2}
+{"question": "What is the purpose of the `--!nocheck` directive?", "choices": ["Disables syntax highlighting", "Disables the type checker for the script entirely", "Disables garbage collection", "Disables runtime errors"], "answer": 1}
+{"question": "What is the default type checking mode in Luau if no directive is specified?", "choices": ["strict", "nonstrict", "nocheck", "dynamic"], "answer": 1}
+{"question": "What happens when you use `--!strict` at the top of a script?", "choices": ["The script cannot be required by others", "All variables must have an explicit or inferable type, and strict type rules apply", "The script runs 10x faster", "Global variables are disabled completely"], "answer": 1}
+{"question": "How do you explicitly cast a variable to a specific type to override the type checker?", "choices": ["variable::Type", "(Type)variable", "variable as Type", "cast(variable, Type)"], "answer": 0}
+{"question": "What type does `typeof(function() end)` return?", "choices": ["closure", "function", "thread", "callable"], "answer": 1}
+{"question": "What type does `typeof(coroutine.create(function() end))` return?", "choices": ["closure", "function", "thread", "coroutine"], "answer": 2}
+{"question": "Which of these is the correct way to type hint a function that returns nothing?", "choices": ["function foo(): ()", "function foo(): void", "function foo(): nil", "Both A and C are acceptable"], "answer": 0}
+{"question": "Which of these represents a variadic argument in a function definition?", "choices": ["args...", "*args", "...", "...args"], "answer": 2}
+{"question": "How do you specify the type of a variadic argument list returning multiple numbers?", "choices": ["...: number", "...: {number}", "...: ...number", "...: (number)"], "answer": 2}
+{"question": "What is the syntax for a multi-line comment in Luau?", "choices": ["/* comment */", "<!-- comment -->", "--[[ comment ]]", "''' comment '''"], "answer": 2}
+{"question": "Which native code generation feature was introduced to Luau to improve execution speed on supported platforms?", "choices": ["JIT Compilation", "AOT Compilation", "Native Code Generation (CodeGen)", "Bytecode Encryption"], "answer": 2}
+{"question": "Which Luau feature caches the results of property lookups to speed up execution?", "choices": ["Inline Caching", "Memoization", "Register Allocation", "Constant Folding"], "answer": 0}
+{"question": "Which of these Lua 5.1 functions was removed in Luau for performance and security reasons?", "choices": ["getfenv / setfenv", "loadstring", "module", "All of the above"], "answer": 3}
+{"question": "How do you define a table type with string keys and boolean values?", "choices": ["{[string]: boolean}", "{string: boolean}", "Map<string, boolean>", "Table<string, boolean>"], "answer": 0}
+{"question": "How do you define an array type containing numbers in Luau?", "choices": ["Array<number>", "{number}", "[number]", "table<number>"], "answer": 1}
+{"question": "What does a `userdata` type represent?", "choices": ["A string containing user details", "A custom C/C++ data structure exposed to Luau", "A table with a locked metatable", "A specific thread allocated to a user"], "answer": 1}
+{"question": "What happens if you try to concatenate a string and a number in Luau (e.g., `'Age: ' .. 25`)?", "choices": ["Syntax error", "Type error in strict mode", "The number is automatically coerced to a string at runtime", "Returns nil"], "answer": 2}
+{"question": "In Luau, if `t` is an empty table, what does `if t then` evaluate to?", "choices": ["false", "true", "nil", "Error"], "answer": 1}
+{"question": "If `x` is `nil`, what is the result of `x or 10`?", "choices": ["nil", "10", "true", "false"], "answer": 1}
+{"question": "If `x` is `5`, what is the result of `x and 10`?", "choices": ["5", "10", "true", "false"], "answer": 1}
+{"question": "What is the primary difference between `pairs()` and `ipairs()`?", "choices": ["pairs() is faster", "ipairs() iterates only over numerical indices in order, stopping at nil", "pairs() only works on userdata", "ipairs() iterates over string keys only"], "answer": 1}
+{"question": "Which built-in library provides functions for coroutine manipulation?", "choices": ["task", "thread", "coroutine", "async"], "answer": 2}
+{"question": "Which function creates a new coroutine without starting it?", "choices": ["coroutine.new()", "coroutine.start()", "coroutine.wrap()", "coroutine.create()"], "answer": 3}
+{"question": "Which function starts or resumes a coroutine?", "choices": ["coroutine.run()", "coroutine.resume()", "coroutine.yield()", "coroutine.start()"], "answer": 1}
+{"question": "Which function suspends the execution of the current coroutine?", "choices": ["coroutine.pause()", "coroutine.stop()", "coroutine.wait()", "coroutine.yield()"], "answer": 3}
+{"question": "What does `coroutine.status(co)` return if the coroutine is currently executing?", "choices": ["running", "suspended", "normal", "dead"], "answer": 0}
+{"question": "What does `coroutine.status(co)` return if the coroutine has finished executing or threw an error?", "choices": ["running", "suspended", "normal", "dead"], "answer": 3}
+{"question": "Which function creates a coroutine and returns a function that resumes it when called?", "choices": ["coroutine.wrap()", "coroutine.create()", "coroutine.bind()", "coroutine.func()"], "answer": 0}
+{"question": "What happens to the arguments passed to `coroutine.resume()` after the initial call?", "choices": ["They are ignored", "They are passed as returns to the yielding function inside the coroutine", "They cause an error", "They reset the coroutine"], "answer": 1}
+{"question": "How do you mark a Luau script to be analyzed by the type checker?", "choices": ["-- typecheck", "--!strict or --!nonstrict", "// strict", "pragma strict"], "answer": 1}
+{"question": "Which of these statements about Luau strings is true?", "choices": ["Strings are mutable", "Strings are immutable", "Strings are null-terminated like in C", "Strings cannot contain null bytes"], "answer": 1}
+{"question": "What is the length operator `#` applied to a string equivalent to?", "choices": ["Counting the number of letters", "Counting the number of bytes", "Counting the number of UTF-8 codepoints", "Counting the number of words"], "answer": 1}
+{"question": "What happens if you define a local variable with the same name as a global variable?", "choices": ["Error: Duplicate identifier", "The local variable shadows the global variable within its scope", "The global variable is overwritten", "The script crashes at runtime"], "answer": 1}
+{"question": "What is the scope of a variable defined with the `local` keyword inside a `do ... end` block?", "choices": ["Global to the script", "Local to the function containing the block", "Local to the block itself", "It leaks into the global environment"], "answer": 2}
+{"question": "Which of these is NOT a valid identifier (variable name) in Luau?", "choices": ["_myVar", "myVar2", "2myVar", "my_var"], "answer": 2}
+{"question": "What is the keyword used to define a function in Luau?", "choices": ["def", "func", "function", "lambda"], "answer": 2}
+{"question": "In Luau, functions are 'first-class values'. What does this mean?", "choices": ["They execute faster than loops", "They can be stored in variables, passed as arguments, and returned from other functions", "They must be defined at the top of the script", "They have higher priority in the event loop"], "answer": 1}
+{"question": "What is a closure in Luau?", "choices": ["A function that has no arguments", "A function that captures and retains access to local variables from its enclosing scope", "A function that is garbage collected immediately", "A function that cannot be modified"], "answer": 1}
+{"question": "What is an 'upvalue'?", "choices": ["A variable passed to a function", "A returned value from a function", "A local variable from an enclosing scope used inside a closure", "The maximum limit of variables"], "answer": 2}
+{"question": "How do you call a method on an object (table) and automatically pass the object as the first argument (`self`)?", "choices": ["object.method()", "object::method()", "object:method()", "object->method()"], "answer": 2}
+{"question": "When defining a method as `function object:method() end`, what hidden parameter is automatically defined?", "choices": ["this", "self", "obj", "context"], "answer": 1}
+{"question": "What is the result of `print(nil == nil)`?", "choices": ["false", "true", "nil", "Error"], "answer": 1}
+{"question": "What is the result of `print(0 == false)`?", "choices": ["true", "false", "nil", "Syntax Error"], "answer": 1}
+{"question": "What is the result of `print(\"10\" + 5)` in Luau?", "choices": ["15", "\"105\"", "Error in strict mode, otherwise 15 at runtime", "Error immediately"], "answer": 2}
+{"question": "What happens if you assign `nil` to an existing key in a table?", "choices": ["The key holds a null reference", "The key-value pair is removed from the table", "The table's size remains unchanged", "An error is thrown"], "answer": 1}
+{"question": "What is the default behavior when accessing a key that doesn't exist in a table?", "choices": ["Throws an error", "Returns 0", "Returns false", "Returns nil"], "answer": 3}
+{"question": "Which of these is a valid way to create an empty table?", "choices": ["{}", "[]", "table()", "new table"], "answer": 0}
+{"question": "How do you access the value associated with the key \"space text\" in a table `t`?", "choices": ["t.space text", "t[\"space text\"]", "t->\"space text\"", "t(space text)"], "answer": 1}
+{"question": "If `t = { [1] = \"a\", [3] = \"c\" }`, what is `#t`?", "choices": ["0", "1", "2", "3"], "answer": 1}
+{"question": "In Luau, the length operator `#` on tables is defined only for sequences. What makes a table a sequence?", "choices": ["All keys are strings", "The keys are a set of positive integers from 1 to n with no gaps", "The table has no nil values anywhere", "The table has a __len metamethod"], "answer": 1}
+{"question": "What is the index of the first element in a standard Luau array?", "choices": ["0", "1", "-1", "Depends on how it was initialized"], "answer": 1}
+{"question": "How does Luau handle tail calls (a function call as the very last action of another function)?", "choices": ["It throws a stack overflow error immediately", "It creates a new stack frame", "It reuses the current stack frame, preventing stack overflow (Proper Tail Calls)", "It converts them to loops automatically at compile time"], "answer": 2}
+{"question": "Which of the following describes the 'type alias' syntax introduced in Luau?", "choices": ["local MyType = {}", "type MyType = {}", "alias MyType = {}", "#define MyType {}"], "answer": 1}
+{"question": "In Luau type annotations, what does `{ [string]: number }` signify?", "choices": ["An array of numbers", "A dictionary with string keys and number values", "A tuple of a string and a number", "A function taking a string and returning a number"], "answer": 1}
+{"question": "In Luau type annotations, what does `(string, number) -> boolean` signify?", "choices": ["A table mapping strings and numbers to booleans", "A function that takes a string and a number and returns a boolean", "A typecast", "An error"], "answer": 1}
+{"question": "Can a Luau type alias refer to itself (recursive types)?", "choices": ["Yes", "No", "Only for arrays", "Only in nonstrict mode"], "answer": 0}

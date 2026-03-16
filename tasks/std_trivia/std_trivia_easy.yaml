@@ -1,0 +1,34 @@
+task: std_trivia_easy
+group: std_trivia
+version: 1.0
+
+dataset_path: jsonl
+dataset_name: easy.jsonl
+
+output_type: loglikelihood
+
+system_prompt: |
+  You are a Luau programming expert.
+
+doc_to_text: |
+  The following is a multiple-choice question about the Luau programming language.
+
+  Question: {{ question }}
+
+  Choose the correct answer:
+  {% for c in choices %}
+  {{ loop.index0 }}) {{ c }}
+  {% endfor %}
+
+doc_to_choices: "{{ choices | tojson }}"
+
+doc_to_target: "{{ answer }}"
+
+generation_kwargs:
+  max_tokens: 1
+  temperature: 0.0
+
+metric_list:
+  - metric: loglikelihood_acc
+    higher_is_better: true
+    primary: true
