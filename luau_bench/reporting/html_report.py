@@ -85,9 +85,9 @@ def _build_data(run: BenchmarkRun) -> dict[str, Any]:
 
             samples.append(
                 {
-                    "description": (
-                        dr.doc.get("description", "") or str(list(dr.doc.keys())[:3])
-                    )[:200],
+                    "description": (dr.doc.get("description", "") or str(list(dr.doc.keys())[:3]))[
+                        :200
+                    ],
                     "prediction": dr.prediction[:1000],
                     "reference": dr.reference[:400],
                     "raw": dr.raw_generation[:800] if dr.raw_generation else "",
@@ -262,10 +262,10 @@ function esc(s) {{
     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }}
 function colourClass(v) {{
-  return v >= 0.7 ? "good" : v >= 0.4 ? "ok" : "poor";
+  return v >= 70 ? "good" : v >= 40 ? "ok" : "poor";
 }}
 function badgeClass(v) {{
-  return v >= 0.7 ? "badge-green" : v >= 0.4 ? "badge-amber" : "badge-red";
+  return v >= 70 ? "badge-green" : v >= 40 ? "badge-amber" : "badge-red";
 }}
 function fmtDuration(s) {{
   if (s < 60) return s.toFixed(1) + "s";
@@ -283,11 +283,10 @@ function fmtDuration(s) {{
 
   let compositeHtml = "<em style='color:var(--muted)'>—</em>";
   if (c !== null && c !== undefined) {{
-    const pct = c * 100;
     const bc = badgeClass(c);
-    compositeHtml = `<span class="badge ${{bc}}">${{pct.toFixed(1)}}</span>`;
+    compositeHtml = `<span class="badge ${{bc}}">${{c.toFixed(1)}}</span>`;
     if (clo !== null && chi !== null)
-      compositeHtml += `<div class="ci">95% CI [${{(clo*100).toFixed(1)}}, ${{(chi*100).toFixed(1)}}]</div>`;
+      compositeHtml += `<div class="ci">95% CI [${{clo.toFixed(1)}}, ${{chi.toFixed(1)}}]</div>`;
   }}
 
   document.getElementById("summaryCard").innerHTML = `
@@ -325,11 +324,10 @@ function fmtDuration(s) {{
 (function buildTable() {{
   const rows = DATA.tasks.map(t => {{
     const v   = t.primary_value ?? 0;
-    const pct = v * 100;
     const cc  = colourClass(v);
-    const bar = `<span class="bar-wrap"><span class="bar-fill ${{cc}}" style="width:${{pct}}%"></span></span>`;
+    const bar = `<span class="bar-wrap"><span class="bar-fill ${{cc}}" style="width:${{v}}%"></span></span>`;
     const ci  = (t.ci_lo !== null && t.ci_hi !== null)
-      ? `<span class="ci">[${{(t.ci_lo*100).toFixed(1)}}, ${{(t.ci_hi*100).toFixed(1)}}]</span>` : "";
+      ? `<span class="ci">[${{t.ci_lo.toFixed(1)}}, ${{t.ci_hi.toFixed(1)}}]</span>` : "";
 
     const metricsCells = t.metrics.slice(0, 6)
       .map(m => `${{esc(m.name)}}=${{m.value.toFixed(3)}}`)
@@ -337,7 +335,7 @@ function fmtDuration(s) {{
 
     const errCell = t.error
       ? `<span class="error-badge">ERROR</span> ${{esc(t.error).slice(0,80)}}`
-      : `${{pct.toFixed(1)}}%${{bar}}${{ci}}`;
+      : `${{v.toFixed(1)}}%${{bar}}${{ci}}`;
 
     return `<tr>
       <td><strong>${{esc(t.name)}}</strong></td>
@@ -446,7 +444,7 @@ function renderAnalyze(az) {{
 function buildChart(Chart) {{
   const tasks  = DATA.tasks.filter(t => !t.error && t.primary !== null);
   const labels = tasks.map(t => t.name);
-  const vals   = tasks.map(t => (t.primary_value ?? 0) * 100);
+  const vals   = tasks.map(t => t.primary_value ?? 0);
 
   const colours = vals.map(v =>
     v >= 70 ? "rgba(34,197,94,.8)" : v >= 40 ? "rgba(245,158,11,.8)" : "rgba(239,68,68,.8)"
@@ -478,7 +476,7 @@ function buildChart(Chart) {{
             afterLabel: ctx => {{
               const t = tasks[ctx.dataIndex];
               if (t.ci_lo !== null && t.ci_hi !== null)
-                return `95% CI: [${{(t.ci_lo*100).toFixed(1)}}%, ${{(t.ci_hi*100).toFixed(1)}}%]`;
+                return `95% CI: [${{t.ci_lo.toFixed(1)}}%, ${{t.ci_hi.toFixed(1)}}%]`;
               return "";
             }}
           }}

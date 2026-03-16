@@ -3,9 +3,18 @@
 # Usage:
 #   luau-bench run --provider ollama --model codellama \
 #       --include-path ./my_tasks
-
-# These are the CLI defaults — shown here for reference.
-# You don't need a config file; everything can be passed via CLI flags.
 #
-# If you prefer a config file, you can use LUAU_BENCH_CONFIG env var
-# or place this in your working directory.
+# All settings below are the CLI defaults — shown here for reference.
+# Every option can be passed directly as a CLI flag; no config file is required.
+
+[model]
+provider = "ollama"
+model_name = "codellama"
+base_url = "http://localhost:11434"
+temperature = 0.0
+max_tokens = 4096
+
+[run]
+num_samples = 1
+parallel = 1
+task_parallel = 4

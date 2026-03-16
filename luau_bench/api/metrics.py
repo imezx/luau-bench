@@ -250,6 +250,16 @@ async def luau_exec(
     }
 
 
+_SCORE_DIMS: frozenset[str] = frozenset(
+    {
+        "type_coverage",
+        "locality_ratio",
+        "uses_strict_mode",
+        "code_validity",
+    }
+)
+
+
 @register_metric("luau_static_analysis")
 def luau_static_analysis(
     predictions: list[str],
@@ -307,7 +317,35 @@ def luau_static_analysis(
         for d in all_dims:
             accum[d] += dim_values.get(d, 0.0)
 
-    return {f"static_{d}": accum[d] / n for d in all_dims}
+    per_dim = {f"static_{d}": accum[d] / n for d in all_dims}
+
+    score_dims = [d for d in all_dims if d in _SCORE_DIMS]
+    if score_dims:
+        aggregate = sum(accum[d] / n for d in score_dims) / len(score_dims)
+    else:
+        aggregate = sum(accum[d] / n for d in all_dims) / len(all_dims)
+
+    per_doc_scores = []
+    for pred in predictions:
+        a = analyze(pred)
+        v = check_code_validity(pred)
+        dim_vals: dict[str, float] = {
+            "type_coverage": a.type_coverage,
+            "locality_ratio": a.locality_ratio,
+            "uses_strict_mode": 100.0 if a.has_strict_mode else 0.0,
+            "code_validity": v["confidence"] * 100.0,
+        }
+        doc_score_dims = [d for d in all_dims if d in _SCORE_DIMS]
+        if doc_score_dims:
+            per_doc_scores.append(
+                sum(dim_vals.get(d, 0.0) for d in doc_score_dims) / len(doc_score_dims) / 100.0
+            )
+
+    return {
+        **per_dim,
+        "luau_static_analysis": aggregate,
+        "_per_doc_scores": per_doc_scores,
+    }
 
 
 @register_metric("luau_analyze")

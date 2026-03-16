@@ -18,6 +18,19 @@ logger = logging.getLogger(__name__)
 _MULTI_SAMPLE_METRICS: frozenset[str] = frozenset({"luau_exec", "pass_at_k"})
 _SIDE_CHANNEL_PREFIX = "_"
 _EXTRAS_KEYS: tuple[str, ...] = ("_exec_details", "_analyze_details", "_pass_flags")
+_PRIMARY_SUFFIXES: tuple[str, ...] = ("_pass_rate", "_clean_rate", "_acc")
+
+
+def _resolve_primary_key(spec_name: str, metric_keys: set[str]) -> Optional[str]:
+    if spec_name in metric_keys:
+        return spec_name
+    for suffix in _PRIMARY_SUFFIXES:
+        if (candidate := spec_name + suffix) in metric_keys:
+            return candidate
+    for key in sorted(metric_keys):
+        if key.startswith(spec_name):
+            return key
+    return None
 
 
 @dataclass
@@ -293,9 +306,13 @@ async def evaluate(
 
             std_errors: dict[str, dict[str, float]] = {}
             per_doc_scores: list[float] = metric_context.get("_per_doc_scores", [])
-            primary_metric_name: Optional[str] = next(
+
+            spec_primary = next(
                 (m.metric for m in task.get_metric_specs() if m.primary),
                 next(iter(task_metrics), None),
+            )
+            primary_metric_name: Optional[str] = (
+                _resolve_primary_key(spec_primary, set(task_metrics)) if spec_primary else None
             )
 
             if per_doc_scores and len(per_doc_scores) >= 2 and primary_metric_name:
