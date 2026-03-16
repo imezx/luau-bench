@@ -1,0 +1,13 @@
+results
+__pycache__/
+
+*.egg-info/
+
+.vscode/
+.idea/
+*.spec
+
+*.lock
+
+tasks/*.yaml
+tasks/*/*.jsonl

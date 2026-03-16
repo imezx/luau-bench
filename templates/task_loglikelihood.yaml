@@ -1,0 +1,62 @@
+task: luau_concepts_mc
+group: examples
+version: 1.0
+
+output_type: loglikelihood
+
+system_prompt: |
+  You are a Luau programming expert.
+
+doc_to_text: |
+  Question: {{ question }}
+
+  Choose the correct answer:
+  {% for c in choices %}
+  {{ loop.index0 }}) {{ c }}
+  {% endfor %}
+
+doc_to_choices: "{{ choices | tojson }}"
+
+doc_to_target: "{{ answer }}"
+
+generation_kwargs:
+  max_tokens: 1
+  temperature: 0.0
+
+metric_list:
+  - metric: loglikelihood_acc
+    higher_is_better: true
+    primary: true
+
+docs:
+  - question: "Which keyword is used to declare a local variable in Luau?"
+    choices:
+      - "var"
+      - "let"
+      - "local"
+      - "dim"
+    answer: 2
+
+  - question: "What does the # operator return when applied to a table in Luau?"
+    choices:
+      - "The number of key-value pairs"
+      - "The length of the array part"
+      - "The memory address"
+      - "The type string"
+    answer: 1
+
+  - question: "Which of the following is the correct way to use string interpolation in Luau?"
+    choices:
+      - "`Hello, ${name}!`"
+      - "`Hello, {name}!`"
+      - '"Hello, " .. name .. "!"'
+      - 'f"Hello, {name}!"'
+    answer: 1
+
+  - question: "What is the result of `type({})` in Luau?"
+    choices:
+      - '"array"'
+      - '"object"'
+      - '"table"'
+      - '"dict"'
+    answer: 2

@@ -1,0 +1,183 @@
+task: generic_stack
+group: examples
+version: 1.0
+
+system_prompt: |
+  You are an expert Luau programmer.  Write clean, idiomatic, well-typed
+  code.  Respond ONLY with code inside a ```luau fenced code block.
+
+doc_to_text: |
+  {{ description }}
+
+  ### Required Interface
+  ```luau
+  {{ signature }}
+  ```
+
+  {% if additional_context %}
+  ### Additional Context
+  {{ additional_context }}
+  {% endif %}
+
+doc_to_target: "{{ reference_solution }}"
+
+generation_kwargs:
+  max_tokens: 4096
+  temperature: 0.0
+
+filters:
+  - name: extract_code
+    args: { lang: luau }
+
+metric_list:
+  - metric: luau_exec
+    primary: true
+  - metric: luau_static_analysis
+    args:
+      dimensions: [type_coverage, uses_strict_mode, code_validity]
+  - metric: luau_analyze
+    higher_is_better: true
+
+metadata:
+  version: 1.0
+  author: your-name
+  reference_solution: |
+    --!strict
+
+    export type Stack<T> = {
+        _data: { T },
+        push: (self: Stack<T>, value: T) -> (),
+        pop:  (self: Stack<T>) -> T?,
+        peek: (self: Stack<T>) -> T?,
+        size: (self: Stack<T>) -> number,
+        isEmpty: (self: Stack<T>) -> boolean,
+    }
+
+    local Stack = {}
+    Stack.__index = Stack
+
+    function Stack.new<T>(): Stack<T>
+        return setmetatable({ _data = {} }, Stack) :: Stack<T>
+    end
+
+    function Stack:push<T>(value: T): ()
+        table.insert(self._data, value)
+    end
+
+    function Stack:pop<T>(): T?
+        if #self._data == 0 then return nil end
+        return table.remove(self._data) :: T
+    end
+
+    function Stack:peek<T>(): T?
+        return self._data[#self._data]
+    end
+
+    function Stack:size(): number
+        return #self._data
+    end
+
+    function Stack:isEmpty(): boolean
+        return #self._data == 0
+    end
+
+docs:
+  - description: |
+      Implement a generic Stack<T> in Luau using --!strict mode.
+
+      The stack must expose:
+        Stack.new(): Stack<T> - creates an empty stack
+        stack:push(value: T): () - pushes a value
+        stack:pop(): T? - removes and returns the top, or nil
+        stack:peek(): T? - returns the top without removing
+        stack:size(): number - current count
+        stack:isEmpty(): boolean - true when empty
+
+      Use a proper type alias with all methods annotated.
+
+    signature: |
+      type Stack<T> = {
+          push: (self: Stack<T>, value: T) -> (),
+          pop: (self: Stack<T>) -> T?,
+          peek: (self: Stack<T>) -> T?,
+          size: (self: Stack<T>) -> number,
+          isEmpty: (self: Stack<T>) -> boolean,
+      }
+
+    additional_context: |
+      Use --!strict mode.  Use generics and type annotations throughout.
+
+    reference_solution: "(see metadata)"
+
+    test_harness: |
+      local _P = "@@LUAU_BENCH_RESULT@@"
+
+      -- === GENERATED CODE ===
+      {{CODE}}
+      -- === END GENERATED CODE ===
+
+      -- Test the Stack implementation
+      local function testStack()
+          local s = Stack.new()
+
+          -- empty on creation
+          do
+              local ok, r = pcall(function() return s:isEmpty() == true end)
+              if ok and r then print(_P .. "PASS:empty on creation")
+              else print(_P .. "FAIL:empty on creation") end
+          end
+
+          -- size is 0
+          do
+              local ok, r = pcall(function() return s:size() == 0 end)
+              if ok and r then print(_P .. "PASS:size 0 on creation")
+              else print(_P .. "FAIL:size 0 on creation") end
+          end
+
+          -- pop on empty returns nil
+          do
+              local ok, r = pcall(function() return s:pop() == nil end)
+              if ok and r then print(_P .. "PASS:pop empty returns nil")
+              else print(_P .. "FAIL:pop empty returns nil") end
+          end
+
+          -- push and size
+          do
+              local ok, r = pcall(function() s:push(10); return s:size() == 1 end)
+              if ok and r then print(_P .. "PASS:push increments size")
+              else print(_P .. "FAIL:push increments size") end
+          end
+
+          -- peek
+          do
+              local ok, r = pcall(function() return s:peek() == 10 end)
+              if ok and r then print(_P .. "PASS:peek returns top")
+              else print(_P .. "FAIL:peek returns top") end
+          end
+
+          -- peek doesn't remove
+          do
+              local ok, r = pcall(function() return s:size() == 1 end)
+              if ok and r then print(_P .. "PASS:peek preserves size")
+              else print(_P .. "FAIL:peek preserves size") end
+          end
+
+          -- pop returns and removes
+          do
+              local ok, r = pcall(function() return s:pop() == 10 and s:isEmpty() end)
+              if ok and r then print(_P .. "PASS:pop returns and removes")
+              else print(_P .. "FAIL:pop returns and removes") end
+          end
+
+          -- LIFO order
+          do
+              local ok, r = pcall(function()
+                  s:push(1); s:push(2); s:push(3)
+                  return s:pop() == 3 and s:pop() == 2 and s:pop() == 1
+              end)
+              if ok and r then print(_P .. "PASS:LIFO order")
+              else print(_P .. "FAIL:LIFO order") end
+          end
+      end
+
+      testStack()

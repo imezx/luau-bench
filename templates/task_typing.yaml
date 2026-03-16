@@ -1,0 +1,267 @@
+task: luau_typing
+group: typing
+version: 1.0
+
+system_prompt: |
+  You are an expert Luau programmer writing code for Luau with --!strict mode.
+  Respond ONLY with code inside a single ```luau fenced code block. No explanations.
+
+  Required style rules:
+  - Always include --!strict at the top
+  - Use `local` or `const` to declare ALL variables (never bare assignment)
+  - Every function parameter MUST have a type annotation
+  - Every function MUST have a return type annotation
+  - Use type aliases for any table shape used more than once
+  - Use T? for optional values, A | B for unions
+
+doc_to_text: |
+  {{ description }}
+
+  ### Required signature
+  ```luau
+  {{ signature }}
+  ```
+
+  {% if type_hints %}
+  ### Type hints
+  {% for hint in type_hints %}
+  -- {{ hint }}
+  {% endfor %}
+  {% endif %}
+
+  {% if examples %}
+  ### Examples
+  {% for ex in examples %}
+  -- {{ ex.input }} -> {{ ex.output }}
+  {% endfor %}
+  {% endif %}
+
+doc_to_target: "{{ reference_solution }}"
+
+output_type: generate_until
+
+generation_kwargs:
+  max_tokens: 1024
+  temperature: 0.0
+
+filters:
+  - name: extract_code
+    args: { lang: luau }
+
+metric_list:
+  - metric: luau_static_analysis
+    primary: true
+    higher_is_better: true
+    args:
+      dimensions:
+        - type_coverage
+        - uses_strict_mode
+        - code_validity
+        - modern_feature_count
+  - metric: luau_exec
+    higher_is_better: true
+  - metric: luau_analyze
+    higher_is_better: true
+
+docs:
+  # type alias + optional field
+  - description: |
+      Define a type alias `Person` for a record with a required `name: string`
+      and an optional `age: number?` field.  Then write a function `greet`
+      that takes a `Person` and returns a greeting string.
+      If age is present, include it: "Hello, Alice (age 30)".
+      If age is absent: "Hello, Alice".
+    signature: |
+      type Person = { name: string, age: number? }
+      function greet(p: Person): string
+    type_hints:
+      - "Use string interpolation or .. concatenation"
+      - "Check age with `if p.age then`"
+    examples:
+      - input: 'greet({name="Alice", age=30})'
+        output: '"Hello, Alice (age 30)"'
+      - input: 'greet({name="Bob"})'
+        output: '"Hello, Bob"'
+    reference_solution: |
+      --!strict
+      type Person = { name: string, age: number? }
+
+      local function greet(p: Person): string
+          if p.age then
+              return `Hello, {p.name} (age {p.age})`
+          end
+          return `Hello, {p.name}`
+      end
+    test_harness: |
+      --!strict
+      {{CODE}}
+
+      local _P = "@@LUAU_BENCH_RESULT@@"
+      local tests: {{input: Person, expected: string}} = {
+          {input = {name = "Alice", age = 30}, expected = "Hello, Alice (age 30)"},
+          {input = {name = "Bob"},             expected = "Hello, Bob"},
+          {input = {name = "Zara", age = 1},   expected = "Hello, Zara (age 1)"},
+      }
+      for _, t in ipairs(tests) do
+          local ok, result = pcall(function(): string return greet(t.input) end)
+          if not ok then
+              print(_P .. "ERROR:greet({name=" .. t.input.name .. "}):" .. tostring(result))
+          elseif result == t.expected then
+              print(_P .. "PASS:greet({name=" .. t.input.name .. "})")
+          else
+              print(_P .. "FAIL:greet({name=" .. t.input.name .. "}):expected " .. t.expected .. " got " .. tostring(result))
+          end
+      end
+
+  # union type
+  - description: |
+      Write a function `classify` that takes a number and returns a string
+      classifying it as "negative", "zero", or "positive".
+      Declare the three possible return values as `const` module-level
+    signature: |
+      function classify(n: number): "negative" | "zero" | "positive"
+    type_hints:
+      - "The return type is a union of string literal types"
+    examples:
+      - input: "classify(-5)"
+        output: '"negative"'
+      - input: "classify(0)"
+        output: '"zero"'
+      - input: "classify(3)"
+        output: '"positive"'
+    reference_solution: |
+      --!strict
+      local NEGATIVE: "negative" = "negative"
+      local ZERO: "zero" = "zero"
+      local POSITIVE: "positive" = "positive"
+
+      local function classify(n: number): "negative" | "zero" | "positive"
+          if n < 0 then return NEGATIVE
+          elseif n == 0 then return ZERO
+          else return POSITIVE
+          end
+      end
+    test_harness: |
+      --!strict
+      {{CODE}}
+
+      local _P = "@@LUAU_BENCH_RESULT@@"
+      local cases: {{n: number, expected: string}} = {
+          {n = -10, expected = "negative"},
+          {n = 0, expected = "zero"},
+          {n = 7, expected = "positive"},
+          {n = -1, expected = "negative"},
+          {n = 100, expected = "positive"},
+      }
+      for _, c in ipairs(cases) do
+          local ok, r = pcall(function(): string return classify(c.n) end)
+          local label = "classify(" .. tostring(c.n) .. ")"
+          if not ok then
+              print(_P .. "ERROR:" .. label .. ":" .. tostring(r))
+          elseif r == c.expected then
+              print(_P .. "PASS:" .. label)
+          else
+              print(_P .. "FAIL:" .. label .. ":expected " .. c.expected .. " got " .. tostring(r))
+          end
+      end
+
+  # generic
+  - description: |
+      Write a generic function `first` that takes an array of any type T
+      and returns the first element, or nil if the array is empty.
+      The return type must be T? (optional T).
+    signature: |
+      function first<T>(arr: {T}): T?
+    type_hints:
+      - "Use <T> to declare the type parameter on the function"
+      - "Return type is T? because the array may be empty"
+      - "arr[1] is the first element in Luau (1-indexed)"
+    examples:
+      - input: "first({10, 20, 30})"
+        output: "10"
+      - input: "first({})"
+        output: "nil"
+    reference_solution: |
+      --!strict
+      local function first<T>(arr: {T}): T?
+          if #arr == 0 then
+              return nil
+          end
+          return arr[1]
+      end
+    test_harness: |
+      --!strict
+      {{CODE}}
+
+      local _P = "@@LUAU_BENCH_RESULT@@"
+
+      local ok1, r1 = pcall(function() return first({10, 20, 30}) end)
+      if not ok1 then print(_P .. "ERROR:first({10,20,30}):" .. tostring(r1))
+      elseif r1 == 10 then print(_P .. "PASS:first({10,20,30})")
+      else print(_P .. "FAIL:first({10,20,30}):expected 10 got " .. tostring(r1)) end
+
+      local ok2, r2 = pcall(function() return first({}) end)
+      if not ok2 then print(_P .. "ERROR:first({}):" .. tostring(r2))
+      elseif r2 == nil then print(_P .. "PASS:first({})")
+      else print(_P .. "FAIL:first({}):expected nil got " .. tostring(r2)) end
+
+      local ok3, r3 = pcall(function() return first({"a", "b"}) end)
+      if not ok3 then print(_P .. "ERROR:first({'a','b'}):" .. tostring(r3))
+      elseif r3 == "a" then print(_P .. "PASS:first({'a','b'})")
+      else print(_P .. "FAIL:first({'a','b'}):expected 'a' got " .. tostring(r3)) end
+
+  # intersection type
+  - description: |
+      Define two type aliases: `Named` (has a `name: string` field) and
+      `Aged` (has an `age: number` field).  Write a function `introduce`
+      that takes a value of type `Named & Aged` (intersection) and returns
+      a formatted introduction string.
+    signature: |
+      type Named = { name: string }
+      type Aged  = { age: number }
+      function introduce(entity: Named & Aged): string
+    type_hints:
+      - "Named & Aged means the value has BOTH name and age fields"
+      - 'Return format: "I am Alice and I am 25 years old."'
+    examples:
+      - input: 'introduce({name="Alice", age=25})'
+        output: '"I am Alice and I am 25 years old."'
+    reference_solution: |
+      --!strict
+      type Named = { name: string }
+      type Aged = { age: number }
+
+      local function introduce(entity: Named & Aged): string
+          return `I am {entity.name} and I am {entity.age} years old.`
+      end
+    test_harness: |
+      --!strict
+      {{CODE}}
+
+      local _P = "@@LUAU_BENCH_RESULT@@"
+      type NamedAndAged = { name: string, age: number }
+      local cases: {NamedAndAged} = {
+          {name = "Alice", age = 25},
+          {name = "Bob",   age = 40},
+          {name = "Zara",  age = 1},
+      }
+      for _, c in ipairs(cases) do
+          local expected = "I am " .. c.name .. " and I am " .. tostring(c.age) .. " years old."
+          local ok, r = pcall(function(): string return introduce(c) end)
+          local label = "introduce(" .. c.name .. ")"
+          if not ok then
+              print(_P .. "ERROR:" .. label .. ":" .. tostring(r))
+          elseif r == expected then
+              print(_P .. "PASS:" .. label)
+          else
+              print(_P .. "FAIL:" .. label .. ":expected [" .. expected .. "] got [" .. tostring(r) .. "]")
+          end
+      end
+
+metadata:
+  version: 1.0
+  note: >
+    Typing tasks evaluate Luau static type system specifically.
+    luau_static_analysis is primary. correct types matter as much as
+    correct runtime behaviour. Tests are run under --!strict to catch
+    type errors the model should have avoided.

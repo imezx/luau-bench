@@ -1,0 +1,35 @@
+task: luau_knowledge_qa
+group: examples
+version: 1.0
+
+system_prompt: |
+  You are a Luau language expert.  Answer the question concisely in one
+  line.  Do not include any explanation.
+
+doc_to_text: "{{ question }}"
+doc_to_target: "{{ answer }}"
+
+generation_kwargs:
+  max_tokens: 128
+  temperature: 0.0
+
+filters:
+  - name: strip_whitespace
+  - name: first_line
+
+metric_list:
+  - metric: exact_match
+    args: { ignore_case: true, ignore_whitespace: true }
+    primary: true
+  - metric: contains
+    args: { ignore_case: true }
+
+docs:
+  - question: "What mode directive enables strict type checking in Luau?"
+    answer: "--!strict"
+
+  - question: "What function freezes a table to make it immutable in Luau?"
+    answer: "table.freeze"
+
+  - question: "What is the compound assignment operator for addition in Luau?"
+    answer: "+="

@@ -1,0 +1,5 @@
+group: examples
+task:
+  - sum_digits
+  - generic_stack
+  - luau_knowledge_qa

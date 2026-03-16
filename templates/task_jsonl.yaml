@@ -1,0 +1,50 @@
+task: sum_digits_jsonl
+group: examples
+version: 1.0
+
+dataset_path: jsonl
+dataset_name: data/sum_digits.jsonl
+
+system_prompt: |
+  You are an expert Luau programmer. Respond ONLY with code inside a
+  single ```luau fenced code block. No explanations.
+
+doc_to_text: |
+  {{ description }}
+
+  ### Required Signature
+  ```luau
+  {{ signature }}
+  ```
+
+  ### Examples
+  {% for ex in examples %}
+  -- {{ ex.desc }}: {{ ex.input }} -> {{ ex.expected }}
+  {% endfor %}
+
+doc_to_target: "{{ reference_solution }}"
+
+output_type: generate_until
+
+generation_kwargs:
+  max_tokens: 2048
+  temperature: 0.0
+
+filters:
+  - name: extract_code
+    args: { lang: luau }
+
+metric_list:
+  - metric: luau_exec
+    higher_is_better: true
+    primary: true
+  - metric: luau_static_analysis
+    args:
+      dimensions: [type_coverage, code_validity]
+
+metadata:
+  version: 1.0
+  note: >
+    Same task as task_basic.yaml but backed by a JSONL file instead of
+    inline docs.  Add more lines to data/sum_digits.jsonl to extend the
+    benchmark without touching this YAML.

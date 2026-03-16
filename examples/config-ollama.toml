@@ -1,0 +1,11 @@
+# Example: evaluate with a local Ollama model
+#
+# Usage:
+#   luau-bench run --provider ollama --model codellama \
+#       --include-path ./my_tasks
+
+# These are the CLI defaults — shown here for reference.
+# You don't need a config file; everything can be passed via CLI flags.
+#
+# If you prefer a config file, you can use LUAU_BENCH_CONFIG env var
+# or place this in your working directory.

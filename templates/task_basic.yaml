@@ -1,0 +1,108 @@
+task: sum_digits
+group: examples
+version: 1.0
+
+system_prompt: |
+  You are an expert Luau programmer.  Respond ONLY with code inside a
+  single ```luau fenced code block.  No explanations.
+
+doc_to_text: |
+  {{ description }}
+
+  ### Required Signature
+  ```luau
+  {{ signature }}
+  ```
+
+  ### Examples
+  {% for ex in examples %}
+  -- {{ ex.desc }}: {{ ex.input }} -> {{ ex.expected }}
+  {% endfor %}
+
+doc_to_target: "{{ reference_solution }}"
+
+output_type: generate_until
+
+generation_kwargs:
+  max_tokens: 2048
+  temperature: 0.0
+  stop_sequences: []
+
+filters:
+  - name: extract_code
+    args: { lang: luau }
+
+metric_list:
+  - metric: luau_exec
+    higher_is_better: true
+    primary: true
+  - metric: luau_static_analysis
+    args:
+      dimensions: [type_coverage, code_validity]
+
+metadata:
+  version: 1.0
+  author: your-name
+  reference_solution: |
+    local function sumDigits(n: number): number
+        local total = 0
+        local s = tostring(math.floor(math.abs(n)))
+        for i = 1, #s do
+            total += tonumber(s:sub(i, i)) :: number
+        end
+        return total
+    end
+
+docs:
+  - description: |
+      Write a function `sumDigits` that accepts a non-negative integer and
+      returns the sum of all its decimal digits.
+      Example: sumDigits(493) -> 16 because 4 + 9 + 3 = 16.
+    signature: "function sumDigits(n: number): number"
+    examples:
+      - { input: 493, expected: 16, desc: "4+9+3" }
+      - { input: 0, expected: 0, desc: "zero" }
+      - { input: 9, expected: 9, desc: "single digit" }
+    reference_solution: |
+      local function sumDigits(n: number): number
+          local total = 0
+          local s = tostring(math.floor(math.abs(n)))
+          for i = 1, #s do
+              total += tonumber(s:sub(i, i)) :: number
+          end
+          return total
+      end
+    test_harness: |
+      -- AUTO-GENERATED TEST HARNESS
+      local function deepEqual(a, b)
+          if type(a) ~= type(b) then return false end
+          if type(a) ~= "table" then return a == b end
+          for k, v in pairs(a) do if not deepEqual(v, b[k]) then return false end end
+          for k, _ in pairs(b) do if a[k] == nil then return false end end
+          return true
+      end
+
+      -- === GENERATED CODE ===
+      {{CODE}}
+      -- === END GENERATED CODE ===
+
+      local _P = "@@LUAU_BENCH_RESULT@@"
+      local tests = {
+          {args = {493}, expected = 16, label = "4+9+3 = 16"},
+          {args = {0}, expected = 0,  label = "zero returns zero"},
+          {args = {9}, expected = 9,  label = "single digit"},
+          {args = {100}, expected = 1,  label = "trailing zeros"},
+          {args = {99999}, expected = 45, label = "all nines"},
+          {args = {1000000}, expected = 1,  label = "large power of ten"},
+      }
+
+      for _, t in ipairs(tests) do
+          local ok, result = pcall(function() return sumDigits(unpack(t.args)) end)
+          if not ok then
+              print(_P .. "ERROR:" .. t.label .. ":" .. tostring(result))
+          elseif deepEqual(result, t.expected) then
+              print(_P .. "PASS:" .. t.label)
+          else
+              print(_P .. "FAIL:" .. t.label .. ":expected " .. tostring(t.expected) .. " got " .. tostring(result))
+          end
+      end
