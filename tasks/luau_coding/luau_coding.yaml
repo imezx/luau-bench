@@ -1,0 +1,52 @@
+task: luau_coding
+group: luau_coding
+version: 1.0
+
+dataset_path: jsonl
+dataset_name: luau_coding.jsonl
+
+system_prompt: |
+  You are an expert Luau programmer.
+
+  When given a coding task:
+  - Output ONLY a ```luau code block containing your complete solution.
+  - Do NOT include explanations, comments outside the code block, or any
+    surrounding prose.
+  - Use --!strict and type annotations where appropriate.
+  - Prefer local variables and modern Luau idioms.
+
+doc_to_text: |
+  Complete the following Luau function:
+
+  ```luau
+  {{ description }}
+  ```
+
+doc_to_target: "{{ reference_solution }}"
+
+output_type: generate_until
+
+generation_kwargs:
+  max_tokens: 1024
+  temperature: 0.0
+  stop_sequences: []
+
+filters:
+  - name: extract_code
+    args:
+      lang: luau
+
+metric_list:
+  - metric: luau_exec
+    primary: true
+    higher_is_better: true
+  - metric: luau_static_analysis
+    higher_is_better: true
+
+metadata:
+  weight: 1.0
+  reference_solution: "-- see each doc"
+  description: >
+    HumanEval-style Luau coding tasks. Each doc provides a function
+    signature + docstring; the model must complete the body. Evaluated
+    by running the test harness against the generated code.
