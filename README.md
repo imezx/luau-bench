@@ -15,6 +15,9 @@ pip install -e ".[all]"
 pip install -e ".[anthropic]"  # Claude models
 pip install -e ".[datasets]"   # HuggingFace dataset loader
 pip install -e ".[progress]"   # tqdm progress bars for long runs
+
+# through pip
+pip install luau-bench --no-cache-dir
 ```
 
 ## Runtime Setup
