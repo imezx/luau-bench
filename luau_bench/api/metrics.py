@@ -296,7 +296,8 @@ def luau_static_analysis(
             "cyclomatic_complexity": float(a.cyclomatic_complexity),
             "nesting_depth": float(a.max_nesting_depth),
             "uses_strict_mode": 100.0 if a.has_strict_mode else 0.0,
-            "modern_feature_count": float(
+            "modern_feature_count": min(
+                100.0,
                 sum(
                     1
                     for feat in [
@@ -311,6 +312,8 @@ def luau_static_analysis(
                     ]
                     if feat
                 )
+                / 8.0
+                * 100.0,
             ),
             "code_validity": v["confidence"] * 100.0,
         }

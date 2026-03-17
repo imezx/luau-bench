@@ -69,6 +69,23 @@ class GenerationCache:
     def stats(self) -> dict[str, int]:
         return {"hits": self._hits, "misses": self._misses}
 
+    def merge(self, other_dir: str | Path) -> int:
+        src = Path(other_dir).expanduser() / _SUBDIR
+        if not src.exists():
+            logger.warning("merge: source cache dir does not exist: %s", src)
+            return 0
+        imported = 0
+        for src_file in src.glob("*.json"):
+            dst_file = self._dir / src_file.name
+            if not dst_file.exists():
+                try:
+                    dst_file.write_bytes(src_file.read_bytes())
+                    imported += 1
+                except OSError as exc:
+                    logger.warning("Cache merge error for %s: %s", src_file.name, exc)
+        logger.info("Merged %d entries from %s", imported, src)
+        return imported
+
     def clear(self) -> int:
         removed = 0
         for p in self._dir.glob("*.json"):

@@ -65,6 +65,10 @@ class TaskConfig:
 
     num_fewshot: int = 0
     fewshot_seed: int = 42
+    # "random": sample from the doc pool at random.
+    # "stratified": sample evenly across distinct values of fewshot_stratify_field.
+    fewshot_strategy: str = "random"
+    fewshot_stratify_field: str = ""
 
     filters: list[FilterSpec] = field(default_factory=list)
 
@@ -121,11 +125,6 @@ class ConfigurableTask(Task):
         return self._render(self.config.doc_to_target, doc)
 
     def get_choices(self, doc: dict[str, Any]) -> list[str]:
-        """
-        render ``doc_to_choices`` and parse the resulting JSON list.
-        it returns an empty list if ``doc_to_choices`` is not set.
-        the template should render to a JSON array, e.g. ``["choice A", "choice B"]``.
-        """
         import json as _json
 
         template = self.config.doc_to_choices
@@ -234,7 +233,11 @@ class ConfigurableTask(Task):
 
         rng = random.Random(self.config.fewshot_seed)
         n = min(self.config.num_fewshot, len(pool))
-        shots = rng.sample(pool, n)
+
+        if self.config.fewshot_strategy == "stratified" and self.config.fewshot_stratify_field:
+            shots = self._stratified_sample(pool, n, self.config.fewshot_stratify_field, rng)
+        else:
+            shots = rng.sample(pool, n)
 
         parts: list[str] = []
         for shot in shots:
@@ -242,6 +245,38 @@ class ConfigurableTask(Task):
             answer = self._render(self.config.doc_to_target, shot)
             parts.append(f"{question}\n{answer}")
         return _FEWSHOT_SEP.join(parts) + _FEWSHOT_SEP
+
+    @staticmethod
+    def _stratified_sample(
+        pool: list[dict[str, Any]],
+        n: int,
+        field: str,
+        rng: random.Random,
+    ) -> list[dict[str, Any]]:
+        from collections import defaultdict
+
+        buckets: dict[Any, list[dict[str, Any]]] = defaultdict(list)
+        for doc in pool:
+            buckets[doc.get(field, "__missing__")].append(doc)
+
+        for docs in buckets.values():
+            rng.shuffle(docs)
+
+        keys = sorted(buckets.keys(), key=str)
+        selected: list[dict[str, Any]] = []
+        remaining = n
+        k = len(keys)
+
+        for i, key in enumerate(keys):
+            share = max(1, round(remaining / (k - i))) if (k - i) > 0 else remaining
+            take = min(share, len(buckets[key]), remaining)
+            selected.extend(buckets[key][:take])
+            remaining -= take
+            if remaining <= 0:
+                break
+
+        rng.shuffle(selected)
+        return selected
 
     @staticmethod
     def _render(template_str: str, doc: dict[str, Any]) -> str:
@@ -293,6 +328,8 @@ def parse_task_config(raw: dict[str, Any]) -> TaskConfig:
         generation_kwargs=gen,
         num_fewshot=int(raw.get("num_fewshot", 0)),
         fewshot_seed=int(raw.get("fewshot_seed", 42)),
+        fewshot_strategy=raw.get("fewshot_strategy", "random"),
+        fewshot_stratify_field=raw.get("fewshot_stratify_field", ""),
         filters=filters,
         metric_list=metrics,
         num_samples=int(raw.get("num_samples", 1)),

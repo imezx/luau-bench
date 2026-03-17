@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
@@ -10,22 +10,6 @@ _METRICS: dict[str, Callable] = {}
 
 
 def register_metric(name: str) -> Callable:
-    """Decorator that registers a metric function under *name*.
-
-    A metric function has the signature::
-
-        def my_metric(
-            predictions: list[str],
-            references: list[str],
-            *,
-            docs: list[dict] | None = None,
-            **kwargs,
-        ) -> dict[str, float]:
-            ...
-
-    It must return a dict whose keys are score names and values are floats.
-    """
-
     def _wrap(fn: Callable) -> Callable:
         if name in _METRICS:
             logger.debug("Overwriting metric '%s'", name)
@@ -48,20 +32,10 @@ def list_metrics() -> list[str]:
     return sorted(_METRICS)
 
 
-
 _FILTERS: dict[str, Callable] = {}
 
 
 def register_filter(name: str) -> Callable:
-    """Decorator that registers an output-processing filter under *name*.
-
-    A filter function transforms a raw model output string into a cleaned
-    string::
-
-        def my_filter(text: str, **kwargs) -> str:
-            ...
-    """
-
     def _wrap(fn: Callable) -> Callable:
         if name in _FILTERS:
             logger.debug("Overwriting filter '%s'", name)
@@ -82,7 +56,6 @@ def get_filter(name: str) -> Callable:
 
 def list_filters() -> list[str]:
     return sorted(_FILTERS)
-
 
 
 _TASK_CONFIGS: dict[str, dict[str, Any]] = {}
@@ -109,7 +82,6 @@ def register_group(name: str, task_names: list[str]) -> None:
 
 
 def resolve_tasks(names: list[str]) -> list[str]:
-    """Expand group names into individual task names, preserving order."""
     result: list[str] = []
     seen: set[str] = set()
     for name in names:

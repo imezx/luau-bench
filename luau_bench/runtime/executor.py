@@ -87,7 +87,7 @@ class LuauExecutor:
         if self.runtime:
             logger.info("Using Luau runtime: %s", self.runtime)
         else:
-            logger.warning("No Luau runtime found — execution disabled.")
+            logger.warning("No Luau runtime found - execution disabled.")
 
     @property
     def available(self) -> bool:
@@ -242,7 +242,7 @@ class LuauAnalyzer:
         if self.analyzer:
             logger.debug("Using luau-analyze: %s", self.analyzer)
         else:
-            logger.debug("luau-analyze not found — static analysis disabled.")
+            logger.debug("luau-analyze not found - static analysis disabled.")
 
     @property
     def available(self) -> bool:

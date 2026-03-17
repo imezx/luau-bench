@@ -78,6 +78,18 @@ def main():
 )
 @click.option("--no-cache", is_flag=True, help="Disable the generation result cache")
 @click.option(
+    "--accumulate-cache",
+    "accumulate_cache_dirs",
+    multiple=True,
+    type=click.Path(),
+    metavar="DIR",
+    help=(
+        "Merge cache entries from DIR into the active cache before running. "
+        "Repeat to merge from multiple directories. "
+        "Useful for accumulating samples across runs before scoring pass@k."
+    ),
+)
+@click.option(
     "--task-parallel", type=int, default=4, show_default=True, help="Max tasks running concurrently"
 )
 @click.option(
@@ -112,6 +124,7 @@ def run(
     show_samples,
     cache_dir,
     no_cache,
+    accumulate_cache_dirs,
     export_formats,
     luau_runtime,
     luau_analyzer,
@@ -153,6 +166,11 @@ def run(
         generation_cache = GenerationCache(cache_dir)
         if verbose:
             click.echo(f"  Generation cache: {cache_dir}")
+
+        for merge_dir in accumulate_cache_dirs:
+            n_imported = generation_cache.merge(merge_dir)
+            if verbose:
+                click.echo(f"  Merged {n_imported} entries from cache: {merge_dir}")
 
     if luau_runtime:
         os.environ["LUAU_RUNTIME"] = luau_runtime
@@ -238,7 +256,7 @@ def ls(paths, include_path, json_output):
             click.echo(f"\nGroups ({len(groups)}):\n")
             for gname, members in sorted(groups.items()):
                 click.echo(
-                    f"  {click.style(gname, fg='magenta', bold=True):30s} → {', '.join(members)}"
+                    f"  {click.style(gname, fg='magenta', bold=True):30s} -> {', '.join(members)}"
                 )
             click.echo()
 
@@ -308,13 +326,14 @@ def validate(paths, include_path, verbose):
                 issues.append(f"Unknown filter: {f.name}")
 
         if issues:
-            click.echo(click.style(f"  ✗ {c.task}: ", fg="red") + "; ".join(issues))
+            click.echo(click.style(f"  FAIL {c.task}: ", fg="red") + "; ".join(issues))
             errors += 1
         else:
             docs = len(task.get_docs())
             metrics = ", ".join(m.metric for m in c.metric_list)
             click.echo(
-                click.style(f"  ✓ {c.task}", fg="green") + f"  ({docs} docs, metrics=[{metrics}])"
+                click.style(f"  ok   {c.task}", fg="green")
+                + f"  ({docs} docs, metrics=[{metrics}])"
             )
 
     click.echo(f"\n{len(tasks)} task(s) checked, {errors} with issues.\n")
@@ -370,7 +389,9 @@ def selftest(include_path, task_names, luau_runtime, verbose):
             c = task.config
             ref_sol = c.metadata.get("reference_solution", "")
             if not ref_sol:
-                click.echo(click.style(f"  ⊘ {c.task}", fg="yellow") + "  (no reference_solution)")
+                click.echo(
+                    click.style(f"  skip {c.task}", fg="yellow") + "  (no reference_solution)"
+                )
                 skipped += 1
                 continue
 
@@ -394,19 +415,18 @@ def selftest(include_path, task_names, luau_runtime, verbose):
                                 click.echo(f"      {d['status'].upper()}: {d['test']}")
 
             if total == 0:
-                click.echo(click.style(f"  ⊘ {c.task}", fg="yellow") + "  (no test harnesses)")
+                click.echo(click.style(f"  skip {c.task}", fg="yellow") + "  (no test harnesses)")
                 skipped += 1
             elif all_passed:
                 passed_tasks += 1
-                click.echo(click.style(f"  ✓ {c.task}", fg="green") + f"  {total_pass}/{total}")
+                click.echo(click.style(f"  ok   {c.task}", fg="green") + f"  {total_pass}/{total}")
             else:
                 failed_tasks += 1
-                click.echo(click.style(f"  ✗ {c.task}", fg="red") + f"  {total_pass}/{total}")
+                click.echo(click.style(f"  FAIL {c.task}", fg="red") + f"  {total_pass}/{total}")
 
     asyncio.run(_run())
 
-    click.echo(f"\n{'─' * 50}")
-    click.echo(f"  {passed_tasks} passed, {failed_tasks} failed, {skipped} skipped\n")
+    click.echo(f"\n  {passed_tasks} passed, {failed_tasks} failed, {skipped} skipped\n")
     if failed_tasks:
         sys.exit(1)
 
@@ -516,15 +536,13 @@ def compare(files, baseline_file, per_task):
         click.echo(click.style("  Per-task breakdown:", bold=True))
         click.echo(
             "  Significance: "
-            + click.style("✓ sig", fg="green")
+            + click.style("sig", fg="green")
             + " = CIs do not overlap  |  "
-            + click.style("~ not sig", fg="yellow")
+            + click.style("not sig", fg="yellow")
             + " = CIs overlap (difference may be noise)"
         )
 
         def _get_ci(run_data: dict, task: str, metric: str) -> Optional[tuple[float, float]]:
-            """Extract (ci_lower, ci_upper) for a metric from the JSON result,
-            or None if no CI data is present."""
             se_block = run_data.get("tasks", {}).get(task, {}).get("std_errors", {}).get(metric)
             if se_block and "ci_lower" in se_block and "ci_upper" in se_block:
                 return (se_block["ci_lower"], se_block["ci_upper"])
@@ -542,7 +560,7 @@ def compare(files, baseline_file, per_task):
                 val = _task_val(baseline_data, task, m)
                 base_ci = _get_ci(baseline_data, task, m)
                 if val is None:
-                    row += f"  {'—':>{_m_w}s}"
+                    row += f"  {'n/a':>{_m_w}s}"
                 elif base_ci:
                     lo, hi = base_ci
                     cell = f"{val:.1f} [{lo:.0f},{hi:.0f}]"
@@ -563,7 +581,7 @@ def compare(files, baseline_file, per_task):
                     new_ci = _get_ci(run_data, task, m)
 
                     if base_v is None or new_v is None:
-                        row += f"  {'—':>{_m_w}s}"
+                        row += f"  {'n/a':>{_m_w}s}"
                         continue
 
                     cell = _delta_str(base_v, new_v)
@@ -572,9 +590,9 @@ def compare(files, baseline_file, per_task):
                         from luau_bench.stats import ci_overlaps
 
                         if ci_overlaps(base_ci, new_ci):
-                            sig_flags.append(click.style("~ not sig", fg="yellow"))
+                            sig_flags.append(click.style("not sig", fg="yellow"))
                         else:
-                            sig_flags.append(click.style("✓ sig", fg="green"))
+                            sig_flags.append(click.style("sig", fg="green"))
 
                     row += "  " + cell.rjust(_m_w)
 
@@ -626,6 +644,26 @@ def cache_stats(cache_dir):
     click.echo(f"  Cache: {cache_path}")
     click.echo(f"  Entries: {len(files)}")
     click.echo(f"  Size:    {total_bytes / 1024:.1f} KB")
+
+
+@cache.command("merge")
+@click.argument("sources", nargs=-1, required=True, type=click.Path())
+@click.option(
+    "--cache-dir",
+    default="~/.cache/luau-bench",
+    show_default=True,
+    help="Destination cache directory to merge entries into.",
+)
+def cache_merge(sources, cache_dir):
+    from luau_bench.cache import GenerationCache
+
+    dest = GenerationCache(cache_dir)
+    total = 0
+    for src in sources:
+        n = dest.merge(src)
+        click.echo(f"  {src}: imported {n} entries")
+        total += n
+    click.echo(f"\n  Total imported: {total} entries -> {cache_dir}")
 
 
 # info

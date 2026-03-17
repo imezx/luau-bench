@@ -148,7 +148,7 @@ async def evaluate(
             docs = task.get_docs()
 
             if not docs:
-                logger.warning("Task '%s': no documents — skipping.", task_name)
+                logger.warning("Task '%s': no documents - skipping.", task_name)
                 return TaskResult(
                     task_name=task_name,
                     version=config.version,
@@ -451,12 +451,9 @@ def _progress(iterable, *, desc: str = "", total: int = 0, quiet: bool = False):
 
 
 def _print_header(model_id: str, total: int) -> None:
-    print(f"\n╔{'═' * 58}╗")
-    print(f"║{'Luau Bench':^58}║")
-    print(f"╠{'═' * 58}╣")
-    print(f"║ Model: {model_id:<50}║")
-    print(f"║ Tasks: {total:<50}║")
-    print(f"╚{'═' * 58}╝\n")
+    print("\nLuau Bench")
+    print(f"  Model : {model_id}")
+    print(f"  Tasks : {total}\n")
 
 
 def _print_task_result(
@@ -467,23 +464,22 @@ def _print_task_result(
 ) -> None:
     parts = [f"{k}={v:.1f}%" for k, v in metrics.items() if isinstance(v, (int, float))]
     score_str = ", ".join(parts[:4])
-    tag = f" ×{num_samples}" if num_samples > 1 else ""
-    print(f"  ✓ {name:30s} ({num_docs} docs{tag})  {score_str}")
+    tag = f" x{num_samples}" if num_samples > 1 else ""
+    print(f"  ok  {name:30s} ({num_docs} docs{tag})  {score_str}")
 
 
 def _print_footer(run: BenchmarkRun) -> None:
     elapsed = (run.finished_at or time.time()) - run.started_at
-    print(f"\n{'─' * 60}")
-    print(f"  Completed {len(run.task_results)} task(s) in {elapsed:.1f}s")
+    print(f"\n  Completed {len(run.task_results)} task(s) in {elapsed:.1f}s")
     for tr in run.task_results:
-        status = "✓" if not tr.error else "✗"
+        status = "ok " if not tr.error else "err"
         metrics_str = ", ".join(
             f"{k}={v:.1f}%" for k, v in list(tr.metrics.items())[:3] if isinstance(v, (int, float))
         )
         if tr.error:
-            print(f"    {status} {tr.task_name}: ERROR — {tr.error}")
+            print(f"    {status}  {tr.task_name}: ERROR - {tr.error}")
         else:
-            print(f"    {status} {tr.task_name}: {metrics_str}")
+            print(f"    {status}  {tr.task_name}: {metrics_str}")
 
     if run.composite_score is not None:
         se_str = ""
@@ -501,14 +497,11 @@ def _print_samples(
     exec_details: Optional[list],
     effective_n: int,
 ) -> None:
-    SEP = "─" * 64
-    SEP2 = "·" * 48
-    print(f"\n{'━' * 64}")
-    print(f"  SAMPLE DUMP — {task_name}")
-    print(f"{'━' * 64}")
+    print(f"\n  SAMPLES: {task_name}")
+    print(f"  {'-' * 60}")
 
     for doc_idx, dr in enumerate(doc_results):
-        print(f"\n  ── doc {doc_idx + 1}/{len(doc_results)} {SEP[:40]}")
+        print(f"\n  doc {doc_idx + 1}/{len(doc_results)}")
 
         prompt_preview = textwrap.fill(
             dr.doc.get("description", "") or str(list(dr.doc.keys())[:3]),
@@ -517,7 +510,7 @@ def _print_samples(
             subsequent_indent="  ",
         )
         if prompt_preview:
-            print(f"\n  Prompt preview:\n{prompt_preview}\n")
+            print(f"\n  Prompt:\n{prompt_preview}\n")
 
         for sample_idx in range(effective_n):
             pred = (
@@ -528,17 +521,17 @@ def _print_samples(
             raw = dr.raw_generation if sample_idx == 0 else ""
 
             tag = f"sample {sample_idx + 1}/{effective_n}" if effective_n > 1 else "output"
-            print(f"  ── {tag} {SEP2[:30]}")
+            print(f"\n  [{tag}]")
 
             if raw:
                 print(
                     f"\n  Raw ({len(raw)} chars):\n"
-                    + textwrap.indent(raw[:600] + ("…" if len(raw) > 600 else ""), "    ")
+                    + textwrap.indent(raw[:600] + ("..." if len(raw) > 600 else ""), "    ")
                 )
 
             print(
                 f"\n  Extracted ({len(pred)} chars):\n"
-                + textwrap.indent(pred[:500] + ("…" if len(pred) > 500 else ""), "    ")
+                + textwrap.indent(pred[:500] + ("..." if len(pred) > 500 else ""), "    ")
             )
 
             flat_idx = doc_idx * effective_n + sample_idx
@@ -554,15 +547,17 @@ def _print_samples(
                 tag2 = "TIMEOUT" if timed_out else f"{passed}/{total} tests passed"
                 print(f"\n  Execution ({ms:.0f}ms): {tag2}")
                 for t in detail.get("details", []):
-                    icon = {"pass": "✓", "fail": "✗", "error": "⚠"}.get(t["status"], "?")
+                    status = {"pass": "pass", "fail": "FAIL", "error": "ERR "}.get(
+                        t["status"], "?   "
+                    )
                     msg = f": {t['message']}" if t.get("message") else ""
-                    print(f"    {icon} {t['test']}{msg}")
+                    print(f"    {status}  {t['test']}{msg}")
                 stderr = (detail.get("stderr") or "").strip()
                 if stderr:
                     print("\n  stderr:\n" + textwrap.indent(stderr[:300], "    "))
             else:
-                print("\n  (no execution — task has no test_harness)")
+                print("\n  (no execution)")
 
         print()
 
-    print(f"{'━' * 64}\n")
+    print(f"  {'-' * 60}\n")

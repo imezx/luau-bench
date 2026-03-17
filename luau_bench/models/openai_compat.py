@@ -4,7 +4,6 @@ import asyncio
 import logging
 import time
 from typing import Any
-
 import httpx
 
 from luau_bench.models import (
@@ -26,7 +25,7 @@ class OpenAICompatAdapter(ModelAdapter):
         if not base.endswith("/v1"):
             base = f"{base}/v1"
         self._chat_url = f"{base}/chat/completions"
-        self._completions_url = f"{base}/completions"  # logprobs
+        self._completions_url = f"{base}/completions" # logprobs
         self._models_url = f"{base}/models"
         self._headers: dict[str, str] = {"Content-Type": "application/json"}
         if config.api_key:
@@ -125,7 +124,7 @@ class OpenAICompatAdapter(ModelAdapter):
                     split_idx = i
             if split_idx is None:
                 logger.warning(
-                    "loglikelihood sentinel not found in token list — "
+                    "loglikelihood sentinel not found in token list - "
                     "falling back to full sequence. Scores may be unreliable."
                 )
                 split_idx = 0
@@ -138,7 +137,7 @@ class OpenAICompatAdapter(ModelAdapter):
                 last = lprobs[-1] if lprobs else None
                 cont_lps = [float(last)] if isinstance(last, (int, float)) else [-100.0]
                 logger.debug(
-                    "Empty continuation logprobs for %r — using generated token fallback",
+                    "Empty continuation logprobs for %r - using generated token fallback",
                     cont[:40],
                 )
 

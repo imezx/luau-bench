@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
 from luau_bench.api import register_group, register_task_config
-from luau_bench.api.task import ConfigurableTask, TaskConfig, parse_task_config
+from luau_bench.api.task import ConfigurableTask, parse_task_config
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def load_tasks_from_path(path: Path) -> list[ConfigurableTask]:
             elif "task" in raw:
                 name = raw["task"]
                 if name in raw_configs:
-                    logger.warning("Duplicate task '%s' — skipping %s", name, yf)
+                    logger.warning("Duplicate task '%s' - skipping %s", name, yf)
                 else:
                     raw_configs[name] = raw
             else:
