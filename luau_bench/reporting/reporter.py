@@ -4,7 +4,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 from luau_bench.evaluator import BenchmarkRun
 
@@ -75,7 +75,7 @@ class Reporter:
 
     def _print_plain(self, run: BenchmarkRun) -> None:
         print(f"\n{'=' * 60}")
-        print(f"Benchmark Results — {run.model_id}")
+        print(f"Benchmark Results - {run.model_id}")
         print(f"{'=' * 60}")
         print(f"Tasks: {len(run.task_results)}\n")
         for tr in sorted(run.task_results, key=lambda t: t.task_name):
@@ -168,7 +168,7 @@ class Reporter:
             vals = " | ".join(
                 f"{tr.metrics.get(m, 0.0):.1f}%"
                 if isinstance(tr.metrics.get(m, 0.0), (int, float))
-                else "—"
+                else "n/a"
                 for m in all_metrics
             )
             err = f" (ERROR: {tr.error})" if tr.error else ""
